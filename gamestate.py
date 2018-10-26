@@ -19,7 +19,8 @@ class GameState:
 
     blueprints = [buildings.abattoir,
                   buildings.arts_center,
-                  buildings.bakehouse]
+                  buildings.bakehouse,
+                  buildings.bank]
 
 
 game_state = GameState()

@@ -111,3 +111,16 @@ spend_energy = actionblocks.SpendEnergy(0.5)
 get_bread = actionblocks.AddItems('bread',1)
 get_money = actionblocks.AddItems('money',0.5)
 bakehouse.actions = [give_grain, spend_energy, get_bread, get_money]
+
+bank = Building()
+bank.name = "bank"
+bank.build_cost = {'brick': 4, 'steel': 1}
+bank.fees = {}
+bank.rank = 29
+bank.value = 16
+bank.price = 40
+bank.type = "economic"
+bank.icon = "none"
+bank.owner = "blueprint"
+bank.usage_limit = 0
+bank.description = "Unusable. Endgame value. Industrial buildings add 3 value each. Economic buildings add 2 each."

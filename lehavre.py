@@ -69,30 +69,36 @@ def process_command(com, count):
             gamestate.game_state.inventory[commands[com]] = gamestate.game_state.offers[commands[com]]
         gamestate.game_state.offers[commands[com]] = 0
     elif com < count:   # usable buildings
-        if gamestate.game_state.constructed[com - 8].current_user == 'none':
-            fees_paid = gamefunctions.get_entry_cost(gamestate.game_state.constructed[com - 8])     # collect entry fees
-            if fees_paid:
-                use = 0
-                while use < gamestate.game_state.constructed[com-8].usage_limit:  # building which allow more than 1 use
-                    if gamestate.game_state.constructed[com - 8].use(gamestate.game_state.constructed[com - 8].ask(gamestate.game_state)):
-                        print(gamestate.game_state.constructed[com - 8].name.title() + " was successfully used.")
-                        gamefunctions.occupy_building(gamestate.game_state.constructed[com - 8])
-                        use += 1
-                        if use < gamestate.game_state.constructed[com-8].usage_limit:
-                            print("Use the " + gamestate.game_state.constructed[com-8].name.title() + " again ? ")
-                            print("1. Yes")
-                            print("2. No")
-                            ans = input("? ")
-                            if int(ans) != 1:
-                                break
-                    else:   # use of building failed
-                        print(gamestate.game_state.constructed[com - 8].name.title() + " could not be used.")
-                        break
-                if use == 0:  # refund fees if building could not be used
-                    for item in fees_paid:
-                        gamestate.game_state.inventory[item[0]] += item[1]
-        else:
+        if gamestate.game_state.constructed[com - 8].usage_limit == 0:
+            print(gamestate.game_state.constructed[com - 8].name.title() + " is not usable.")
+            return
+
+        if gamestate.game_state.constructed[com - 8].current_user != 'none':
             print(gamestate.game_state.constructed[com - 8].name.title() + " is already occupied.")
+            return
+
+        fees_paid = gamefunctions.get_entry_cost(gamestate.game_state.constructed[com - 8])     # collect entry fees
+        if fees_paid:
+            use = 0
+            while use < gamestate.game_state.constructed[com-8].usage_limit:  # building which allow more than 1 use
+                if gamestate.game_state.constructed[com - 8].use(gamestate.game_state.constructed[com - 8].ask(gamestate.game_state)):
+                    print(gamestate.game_state.constructed[com - 8].name.title() + " was successfully used.")
+                    gamefunctions.occupy_building(gamestate.game_state.constructed[com - 8])
+                    use += 1
+                    if use < gamestate.game_state.constructed[com-8].usage_limit:
+                        print("Use the " + gamestate.game_state.constructed[com-8].name.title() + " again ? ")
+                        print("1. Yes")
+                        print("2. No")
+                        ans = input("? ")
+                        if int(ans) != 1:
+                            break
+                else:   # use of building failed
+                    print(gamestate.game_state.constructed[com - 8].name.title() + " could not be used.")
+                    break
+            if use == 0:  # refund fees if building could not be used
+                for item in fees_paid:
+                    gamestate.game_state.inventory[item[0]] += item[1]
+
 
 
 def run_game():
