@@ -1,6 +1,6 @@
 import math
 import gamefunctions
-
+import resources
 
 class RemoveItems:
     """ Removes 'item' type from inventory applying the 'modifier' """
@@ -50,6 +50,9 @@ class Construct:
     def do(self, args):
         if args[1] is None:
             print("No blueprints available to construct.")
+            return False
+        if len(args[1].build_cost) == 0:
+            print(args[1].name.title() + " can only be purchased. Cannot be built.")
             return False
         for key, value in args[1].build_cost.items():
             required = value
@@ -111,3 +114,82 @@ class SpendEnergy:
         else:
             print("You don't have enough Energy.")
             return False
+
+
+class CollectEmptyOffers:
+    """ Adds 'quantity' of each item from empty offers to inventory """
+    quantity = 0.0
+
+    def __init__(self,  qty):
+        self.quantity = qty
+
+    '''args: 0 = game_state, 1 = empty offers'''
+    def do(self, args):
+        if len(args[1]) == 0:
+            print("No empty offers to avail.")
+            return False
+        print("You received ", end="")
+        for idx, offer in enumerate(args[1]):
+            if offer in args[0].inventory:
+                args[0].inventory[offer] += self.quantity
+            else:
+                args[0].inventory[offer] = self.quantity
+            if len(args[1]) > 1 and idx < len(args[1])-2:
+                print(offer.title(), end=', ')
+            else:
+                if len(args[1]) == 1 or idx == len(args[1])-2:
+                    print(offer.title(), end=' ')
+                else:
+                    print("and " + offer.title(), end=' ')
+        if len(args[1]) == 1:
+            print ("[2]")
+        else:
+            print("[2 each]")
+        return True
+
+
+class SellItems:
+    """ Sells items from inventory based on the 'standard_rate' and 'upgraded_rate' based on item category """
+    standard_rate = 0
+    upgraded_rate = 0
+
+    def __init__(self, std_rate, upg_rate):
+        self.standard_rate = std_rate
+        self.upgraded_rate = upg_rate
+
+    '''args: 0 = game_state, 1 = selected items from inventory'''
+    def do(self, args):
+        if len(args[1]) == 0:
+            return False
+        std_items = []
+        std_count = 0
+        upg_items = []
+        upg_count = 0
+        for key, value in args[1].items():
+            if resources.resource_map[key].category == 'standard':
+                std_count += value
+                std_items.append(key)
+            if resources.resource_map[key].category == 'upgraded':
+                upg_count += value
+                upg_items.append(key)
+            args[0].inventory[key] -= value
+        if std_count > 0:
+            print("Sold " + str(std_count) + " standard items (", end="")
+            for idx, sitem in enumerate(std_items):
+                if len(std_items) == 1 or idx == len(std_items) - 1:
+                    print(sitem.title(), end="")
+                else:
+                    print(sitem.title(), end=", ")
+            print("). Value = " + str(math.floor(std_count / self.standard_rate)) + " Money")
+        if upg_count > 0:
+            print("Sold " + str(upg_count) + " upgraded items (", end="")
+            for idx, uitem in enumerate(upg_items):
+                if len(upg_items) == 1 or idx == len(upg_items) - 1:
+                    print(uitem.title(), end="")
+                else:
+                    print(uitem.title(), end=", ")
+            print("). Value = " + str(math.floor(upg_count / self.upgraded_rate)) + " Money")
+        total = math.floor(std_count / self.standard_rate) + math.floor(upg_count / self.upgraded_rate)
+        print("Received a total of " + str(total) + " Money")
+        args[0].inventory['money'] += total
+        return True
