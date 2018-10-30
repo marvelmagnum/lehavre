@@ -78,7 +78,7 @@ def process_command(com, count):
             return
 
         fees_paid = gamefunctions.get_entry_cost(gamestate.game_state.constructed[com - 8])     # collect entry fees
-        if fees_paid:
+        if fees_paid or not gamestate.game_state.constructed[com - 8].fees:
             use = 0
             while use < gamestate.game_state.constructed[com-8].usage_limit:  # building which allow more than 1 use
                 if gamestate.game_state.constructed[com - 8].use(gamestate.game_state.constructed[com - 8].ask(gamestate.game_state)):
@@ -95,7 +95,7 @@ def process_command(com, count):
                 else:   # use of building failed
                     print(gamestate.game_state.constructed[com - 8].name.title() + " could not be used.")
                     break
-            if use == 0:  # refund fees if building could not be used
+            if use == 0 and fees_paid:  # refund fees if building could not be used
                 for item in fees_paid:
                     gamestate.game_state.inventory[item[0]] += item[1]
 

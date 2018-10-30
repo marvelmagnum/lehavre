@@ -63,6 +63,7 @@ class Construct:
             if key in args[0].inventory and args[0].inventory[key] >= required:
                 args[0].inventory[key] -= required
             else:
+                print("You don't have enough " + key.title())
                 return False
         args[1].owner = args[2]
         idx = 0

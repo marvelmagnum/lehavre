@@ -15,12 +15,14 @@ class GameState:
              ['wood', 'clay'],
              ['wood', 'cattle']]
 
-    constructed = [buildings.construction_firm]
+    constructed = [buildings.building_firm_a,
+                   buildings.building_firm_b,
+                   buildings.construction_firm]
 
     blueprints = [buildings.abattoir,
                   buildings.arts_center,
                   buildings.bakehouse,
-                  buildings.bank]
+                  buildings.bank,
                   buildings.bakehouse,
                   buildings.black_market,
                   buildings.brick_works,

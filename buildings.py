@@ -10,7 +10,7 @@ class Building:
     value = 0
     price = 0   # for buildings which has different purchase cost than value. otherwise equal to value
     type = "none" # types: none, craftsman, economic, industrial, public
-    icon = "none" # icons: none, hammer, fisherman
+    icon = ['none'] # icons: none, hammer, fisherman
     owner = "undefined" # owners: blueprint, game, p1, p2, ...
     current_user = "none"  #users: none, p1, p2, ...
     usage_limit = 0
@@ -40,23 +40,6 @@ class Building:
         return True           # building used normally
 
 
-construction_firm = Building()
-construction_firm.name = "construction firm"
-construction_firm.build_cost = {}
-construction_firm.fees = {'food' : 2}
-construction_firm.rank = 0
-construction_firm.value = construction_firm.price = 8
-construction_firm.type = "industrial"
-construction_firm.icon = "hammer"
-construction_firm.owner = "game"
-construction_firm.usage_limit = 2
-construction_firm.description = "Build up to 2 buildings from the available blueprints."
-cfirm_get_blueprint = requestblocks.SelectBlueprint()
-cfirm_get_player = requestblocks.SelectPlayer()
-construction_firm.requests = [cfirm_get_blueprint, cfirm_get_player]
-cfirm_build = actionblocks.Construct({})
-construction_firm.actions = [cfirm_build]
-
 ''' A '''
 abattoir = Building()
 abattoir.name = "abattoir"
@@ -65,7 +48,7 @@ abattoir.fees = {'money' : 2}
 abattoir.rank = 9
 abattoir.value = abattoir.price = 8
 abattoir.type = "craftsman"
-abattoir.icon = "none"
+abattoir.icon = ['none']
 abattoir.owner = "blueprint"
 abattoir.usage_limit = 1
 abattoir.description = "Slaughter Cattle for Meat. Also receive 1 Hides for every 2 Cattle slaughtered."
@@ -83,7 +66,7 @@ arts_center.fees = {'food' : 1}
 arts_center.rank = 11
 arts_center.value = arts_center.price = 10
 arts_center.type = "craftsman"
-arts_center.icon = "fisherman"
+arts_center.icon = ['fisherman']
 arts_center.owner = "blueprint"
 arts_center.usage_limit = 1
 arts_center.description = "Receive 4 Money for each player using your buildings."
@@ -100,7 +83,7 @@ bakehouse.fees = {'food' : 1}
 bakehouse.rank = 5
 bakehouse.value = bakehouse.price = 8
 bakehouse.type = "craftsman"
-bakehouse.icon = "none"
+bakehouse.icon = ['none']
 bakehouse.owner = "blueprint"
 bakehouse.usage_limit = 1
 bakehouse.description = "Bake Bread with Grain. Spend 1 Energy and receive 1 Money for every 2 Bread baked."
@@ -119,7 +102,7 @@ black_market.fees = {'food' : 1}
 black_market.rank = 13
 black_market.value = black_market.price = 2
 black_market.type = "none"
-black_market.icon = "none"
+black_market.icon = ['none']
 black_market.owner = "blueprint"
 black_market.usage_limit = 1
 black_market.description = "Un-buildable. Collect 2 of each item whose offer space is empty."
@@ -136,7 +119,7 @@ bank.rank = 29
 bank.value = 16
 bank.price = 40
 bank.type = "economic"
-bank.icon = "none"
+bank.icon = ['none']
 bank.owner = "blueprint"
 bank.usage_limit = 0
 bank.description = "Unusable. Endgame value. Industrial buildings add 3 value each. Economic buildings add 2 each."
@@ -148,7 +131,7 @@ brick_works.fees = {'food' : 1}
 brick_works.rank = 14
 brick_works.value = brick_works.price = 14
 brick_works.type = "industrial"
-brick_works.icon = "none"
+brick_works.icon = ['none']
 brick_works.owner = "blueprint"
 brick_works.usage_limit = 1
 brick_works.description = "Make Bricks from Clay. Spend 1 Energy and receive 1 Money for every 2 Bricks made."
@@ -167,7 +150,7 @@ bridge_over_seine.fees = {'money' : 2}
 bridge_over_seine.rank = 27
 bridge_over_seine.value = bridge_over_seine.price = 16
 bridge_over_seine.type = "none"
-bridge_over_seine.icon = "none"
+bridge_over_seine.icon = ['none']
 bridge_over_seine.owner = "blueprint"
 bridge_over_seine.usage_limit = 1
 bridge_over_seine.description = "Sell goods for money. Receive 1 Money for each upgraded item or 3 standard items."
@@ -175,3 +158,73 @@ bridge_select_items = requestblocks.SelectInventoryItems()
 bridge_over_seine.requests = [bridge_select_items]
 bridge_sell_items = actionblocks.SellItems(3,1)
 bridge_over_seine.actions = [bridge_sell_items]
+
+building_firm_a = Building()
+building_firm_a.name = "building firm (a)"
+building_firm_a.build_cost = {}
+building_firm_a.fees = {}
+building_firm_a.rank = 0
+building_firm_a.value = building_firm_a.price = 4
+building_firm_a.type = "craftsman"
+building_firm_a.icon = ['hammer']
+building_firm_a.owner = "game"
+building_firm_a.usage_limit = 1
+building_firm_a.description = "Build 1 building from the available blueprints."
+bfirma_get_blueprint = requestblocks.SelectBlueprint()
+bfirma_get_player = requestblocks.SelectPlayer()
+building_firm_a.requests = [bfirma_get_blueprint, bfirma_get_player]
+bfirma_build = actionblocks.Construct({})
+building_firm_a.actions = [bfirma_build]
+
+building_firm_b = Building()
+building_firm_b.name = "building firm (b)"
+building_firm_b.build_cost = {}
+building_firm_b.fees = {'food' : 1}
+building_firm_b.rank = 0
+building_firm_b.value = building_firm_b.price = 6
+building_firm_b.type = "craftsman"
+building_firm_b.icon = ['hammer']
+building_firm_b.owner = "game"
+building_firm_b.usage_limit = 1
+building_firm_b.description = "Build 1 building from the available blueprints."
+bfirmb_get_blueprint = requestblocks.SelectBlueprint()
+bfirmb_get_player = requestblocks.SelectPlayer()
+building_firm_b.requests = [bfirmb_get_blueprint, bfirmb_get_player]
+bfirmb_build = actionblocks.Construct({})
+building_firm_b.actions = [bfirmb_build]
+
+business_office = Building()
+business_office.name = "business office"
+business_office.build_cost = {'wood' : 4, 'clay' : 1}
+business_office.fees = {'money' : 1}
+business_office.rank = 21
+business_office.value = business_office.price = 12
+business_office.type = "economic"
+business_office.icon = ['hammer', 'fisherman']
+business_office.owner = "blueprint"
+business_office.usage_limit = 1
+business_office.description = "Trade 4 goods for 1 Steel and/or 1 item for 1 Charcoal, Leather or Brick."
+''' TODO
+boffice_select_items = requestblocks.SelectInventoryItems()
+business_office.requests = [boffice_select_items]
+boffice_sell_items = actionblocks.SellItems(3,1)
+business_office.actions = [boffice_sell_items]
+'''
+
+''' C '''
+construction_firm = Building()
+construction_firm.name = "construction firm"
+construction_firm.build_cost = {}
+construction_firm.fees = {'food' : 2}
+construction_firm.rank = 0
+construction_firm.value = construction_firm.price = 8
+construction_firm.type = "industrial"
+construction_firm.icon = ['hammer']
+construction_firm.owner = "game"
+construction_firm.usage_limit = 2
+construction_firm.description = "Build up to 2 buildings from the available blueprints."
+cfirm_get_blueprint = requestblocks.SelectBlueprint()
+cfirm_get_player = requestblocks.SelectPlayer()
+construction_firm.requests = [cfirm_get_blueprint, cfirm_get_player]
+cfirm_build = actionblocks.Construct({})
+construction_firm.actions = [cfirm_build]
