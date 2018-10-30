@@ -21,6 +21,10 @@ class GameState:
                   buildings.arts_center,
                   buildings.bakehouse,
                   buildings.bank]
+                  buildings.bakehouse,
+                  buildings.black_market,
+                  buildings.brick_works,
+                  buildings.bridge_over_seine]
 
 
 game_state = GameState()

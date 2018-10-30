@@ -51,11 +51,11 @@ construction_firm.icon = "hammer"
 construction_firm.owner = "game"
 construction_firm.usage_limit = 2
 construction_firm.description = "Build up to 2 buildings from the available blueprints."
-get_blueprint = requestblocks.SelectBlueprint()
-get_player = requestblocks.SelectPlayer()
-construction_firm.requests = [get_blueprint, get_player]
-build = actionblocks.Construct({})
-construction_firm.actions = [build]
+cfirm_get_blueprint = requestblocks.SelectBlueprint()
+cfirm_get_player = requestblocks.SelectPlayer()
+construction_firm.requests = [cfirm_get_blueprint, cfirm_get_player]
+cfirm_build = actionblocks.Construct({})
+construction_firm.actions = [cfirm_build]
 
 ''' A '''
 abattoir = Building()
@@ -69,12 +69,12 @@ abattoir.icon = "none"
 abattoir.owner = "blueprint"
 abattoir.usage_limit = 1
 abattoir.description = "Slaughter Cattle for Meat. Also receive 1 Hides for every 2 Cattle slaughtered."
-get_quantity = requestblocks.GetQuantity('cattle')
-abattoir.requests = [get_quantity]
-give_cattle = actionblocks.RemoveItems('cattle', 1)
-get_meat = actionblocks.AddItems('meat',1)
-get_hide = actionblocks.AddItems('hides',0.5)
-abattoir.actions = [give_cattle, get_meat, get_hide]
+abatr_get_quantity = requestblocks.GetQuantity('cattle')
+abattoir.requests = [abatr_get_quantity]
+abatr_give_cattle = actionblocks.RemoveItems('cattle', 1)
+abatr_get_meat = actionblocks.AddItems('meat',1)
+abatr_get_hide = actionblocks.AddItems('hides',0.5)
+abattoir.actions = [abatr_give_cattle, abatr_get_meat, abatr_get_hide]
 
 arts_center = Building()
 arts_center.name = "arts center"
@@ -87,10 +87,10 @@ arts_center.icon = "fisherman"
 arts_center.owner = "blueprint"
 arts_center.usage_limit = 1
 arts_center.description = "Receive 4 Money for each player using your buildings."
-get_player = requestblocks.SelectPlayer()
-arts_center.requests = [get_player]
-collect_tickets = actionblocks.CollectTickets(4)
-arts_center.actions = [collect_tickets]
+artct_get_player = requestblocks.SelectPlayer()
+arts_center.requests = [artct_get_player]
+artct_collect_tickets = actionblocks.CollectTickets(4)
+arts_center.actions = [artct_collect_tickets]
 
 ''' B '''
 bakehouse = Building()
@@ -104,13 +104,29 @@ bakehouse.icon = "none"
 bakehouse.owner = "blueprint"
 bakehouse.usage_limit = 1
 bakehouse.description = "Bake Bread with Grain. Spend 1 Energy and receive 1 Money for every 2 Bread baked."
-get_quantity = requestblocks.GetQuantity('grain')
-bakehouse.requests = [get_quantity]
-give_grain = actionblocks.RemoveItems('grain', 1)
-spend_energy = actionblocks.SpendEnergy(0.5)
-get_bread = actionblocks.AddItems('bread',1)
-get_money = actionblocks.AddItems('money',0.5)
-bakehouse.actions = [give_grain, spend_energy, get_bread, get_money]
+bakeh_get_quantity = requestblocks.GetQuantity('grain')
+bakehouse.requests = [bakeh_get_quantity]
+bakeh_give_grain = actionblocks.RemoveItems('grain', 1)
+bakeh_spend_energy = actionblocks.SpendEnergy(0.5)
+bakeh_get_bread = actionblocks.AddItems('bread',1)
+bakeh_get_money = actionblocks.AddItems('money',0.5)
+bakehouse.actions = [bakeh_give_grain, bakeh_spend_energy, bakeh_get_bread, bakeh_get_money]
+
+black_market = Building()
+black_market.name = "black market"
+black_market.build_cost = {}
+black_market.fees = {'food' : 1}
+black_market.rank = 13
+black_market.value = black_market.price = 2
+black_market.type = "none"
+black_market.icon = "none"
+black_market.owner = "blueprint"
+black_market.usage_limit = 1
+black_market.description = "Un-buildable. Collect 2 of each item whose offer space is empty."
+blkmkt_get_empty_offers = requestblocks.GetEmptyOffers()
+black_market.requests = [blkmkt_get_empty_offers]
+blkmkt_collect_empty_offers = actionblocks.CollectEmptyOffers(2)
+black_market.actions = [blkmkt_collect_empty_offers]
 
 bank = Building()
 bank.name = "bank"
@@ -124,3 +140,38 @@ bank.icon = "none"
 bank.owner = "blueprint"
 bank.usage_limit = 0
 bank.description = "Unusable. Endgame value. Industrial buildings add 3 value each. Economic buildings add 2 each."
+
+brick_works = Building()
+brick_works.name = "brickworks"
+brick_works.build_cost = {'wood' : 2, 'clay' : 1, 'iron' : 1}
+brick_works.fees = {'food' : 1}
+brick_works.rank = 14
+brick_works.value = brick_works.price = 14
+brick_works.type = "industrial"
+brick_works.icon = "none"
+brick_works.owner = "blueprint"
+brick_works.usage_limit = 1
+brick_works.description = "Make Bricks from Clay. Spend 1 Energy and receive 1 Money for every 2 Bricks made."
+brkwrks_get_quantity = requestblocks.GetQuantity('clay')
+brick_works.requests = [brkwrks_get_quantity]
+brkwrks_give_clay = actionblocks.RemoveItems('clay', 1)
+brkwrks_spend_energy = actionblocks.SpendEnergy(0.5)
+brkwrks_get_brick = actionblocks.AddItems('brick',1)
+brkwrks_get_money = actionblocks.AddItems('money',0.5)
+brick_works.actions = [brkwrks_give_clay, brkwrks_spend_energy, brkwrks_get_brick, brkwrks_get_money]
+
+bridge_over_seine = Building()
+bridge_over_seine.name = "bridge over the seine"
+bridge_over_seine.build_cost = {'iron' : 3}
+bridge_over_seine.fees = {'money' : 2}
+bridge_over_seine.rank = 27
+bridge_over_seine.value = bridge_over_seine.price = 16
+bridge_over_seine.type = "none"
+bridge_over_seine.icon = "none"
+bridge_over_seine.owner = "blueprint"
+bridge_over_seine.usage_limit = 1
+bridge_over_seine.description = "Sell goods for money. Receive 1 Money for each upgraded item or 3 standard items."
+bridge_select_items = requestblocks.SelectInventoryItems()
+bridge_over_seine.requests = [bridge_select_items]
+bridge_sell_items = actionblocks.SellItems(3,1)
+bridge_over_seine.actions = [bridge_sell_items]
