@@ -204,12 +204,12 @@ business_office.icon = ['hammer', 'fisherman']
 business_office.owner = "blueprint"
 business_office.usage_limit = 1
 business_office.description = "Trade 4 goods for 1 Steel and/or 1 item for 1 Charcoal, Leather or Brick."
-''' TODO
-boffice_select_items = requestblocks.SelectInventoryItems()
-business_office.requests = [boffice_select_items]
-boffice_sell_items = actionblocks.SellItems(3,1)
-business_office.actions = [boffice_sell_items]
-'''
+boffice_request_steel = requestblocks.SetTradeRequest(['steel'])
+boffice_request_ChLeBr = requestblocks.SetTradeRequest(['charcoal', 'leather', 'brick'])
+business_office.requests = [boffice_request_steel, boffice_request_ChLeBr]
+boffice_trade_steel = actionblocks.TradeItems([('item',4)],['steel'])
+boffice_trade_ChLeBr = actionblocks.TradeItems([('item',1)],['charcoal', 'leather', 'brick'])
+business_office.actions = [boffice_trade_steel, boffice_trade_ChLeBr]
 
 ''' C '''
 construction_firm = Building()

@@ -194,3 +194,19 @@ class SellItems:
         print("Received a total of " + str(total) + " Money")
         args[0].inventory['money'] += total
         return True
+
+
+class TradeItems:
+    """ Trades items based on the trade rates set: the 'offer package' has a list of tuples (item and rate)
+        'trade package' has a list of tradeable items corresponding to the package """
+
+    offer_package = []
+    trade_package = []
+
+    def __init__(self, offer_package, trade_package):
+        self.offer_package = offer_package
+        self.trade_package = trade_package
+
+    '''args: 0 = game_state, 1,2,.... = tuples of requested 'trade items' and 'quantity' desired'''
+    def do(self, args):
+        for

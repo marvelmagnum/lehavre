@@ -91,5 +91,33 @@ class GetEmptyOffers:
         for key, value in game_state.offers.items():
             if value == 0:
                 empty_offers.append(key)
-        return  empty_offers
+        return empty_offers
 
+
+class SetTradeRequest:
+    """ Selects an item among 'choices' and specified amount for trading """
+    choices = []
+
+    def __init__(self, choices):
+        self.choices = choices
+
+    def get(self, game_state):
+        if len(self.choices) == 1:
+            print("Trade " + self.choices[0].title + " ? ")
+            print("1. Yes")
+            print("2. No")
+            ans = input("? ")
+            if int(ans) == 2:
+                return self.choices[0], 0
+            qty = input("How many " + self.choices[0].title() + " do you want ? ")
+            return self.choices[0], int(qty)
+        if len(self.choices) > 1:
+            print("Select commodity to trade:")
+            for idx, item in enumerate(self.choices):
+                print(str(idx+1) + ". " + item)
+            print(str(idx+1) + ". Nothing")
+            ans = input("? ")
+            if int(ans) == idx+1:
+                return self.choices[0], 0
+            qty = input("How many " + self.choices[int(ans)-1].title() + " do you want ? ")
+            return self.choices[int(ans)-1], qty
