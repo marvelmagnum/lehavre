@@ -1,6 +1,7 @@
 import requestblocks
 import actionblocks
 
+# TODO: Handle end of game building abilities
 
 class Building:
     name = "undefined"
@@ -167,7 +168,7 @@ building_firm_a.rank = 0
 building_firm_a.value = building_firm_a.price = 4
 building_firm_a.type = "craftsman"
 building_firm_a.icon = ['hammer']
-building_firm_a.owner = "game"
+building_firm_a.owner = "none"
 building_firm_a.usage_limit = 1
 building_firm_a.description = "Build 1 building from the available blueprints."
 bfirma_get_blueprint = requestblocks.SelectBlueprint()
@@ -184,7 +185,7 @@ building_firm_b.rank = 0
 building_firm_b.value = building_firm_b.price = 6
 building_firm_b.type = "craftsman"
 building_firm_b.icon = ['hammer']
-building_firm_b.owner = "game"
+building_firm_b.owner = "none"
 building_firm_b.usage_limit = 1
 building_firm_b.description = "Build 1 building from the available blueprints."
 bfirmb_get_blueprint = requestblocks.SelectBlueprint()
@@ -262,6 +263,40 @@ clay_mound.requests = [cmound_select_player]
 cmound_get_clay = actionblocks.ReceiveItems('clay',3, 'hammer', 1)
 clay_mound.actions = [cmound_get_clay]
 
+cokery = Building()
+cokery.name = "cokery"
+cokery.build_cost = {'brick' : 2, 'iron' : 2}
+cokery.fees = {'money' : 1}
+cokery.rank = 25
+cokery.value = cokery.price = 18
+cokery.type = "industrial"
+cokery.icon = ['none']
+cokery.owner = "blueprint"
+cokery.usage_limit = 1
+cokery.description = "Convert Coal to Coke. Receive 1 Money for every Coke made."
+cokery_get_quantity = requestblocks.GetQuantity('coal')
+cokery.requests = [cokery_get_quantity]
+cokery_give_coal = actionblocks.RemoveItems('coal', 1)
+cokery_get_coke = actionblocks.AddItems('coke',1)
+cokery_get_money = actionblocks.AddItems('money',1)
+cokery.actions = [cokery_give_coal, cokery_get_coke, cokery_get_money]
+
+colliery = Building()
+colliery.name = "colliery"
+colliery.build_cost = {'wood': 1, 'clay': 3}
+colliery.fees = {'food': 2}
+colliery.rank = 16
+colliery.value = colliery.price = 10
+colliery.type = "industrial"
+colliery.icon = ['none']
+colliery.owner = "blueprint"
+colliery.usage_limit = 1
+colliery.description = "Receive 3 Coal plus an additional 1 Coal if you own any 'Hammer' buildings."
+colliery_select_player = requestblocks.SelectPlayer()
+colliery.requests = [colliery_select_player]
+colliery_get_coal = actionblocks.ReceiveItems('coal',3, 'hammer', 1, 1)
+colliery.actions = [colliery_get_coal]
+
 construction_firm = Building()
 construction_firm.name = "construction firm"
 construction_firm.build_cost = {}
@@ -278,3 +313,88 @@ cfirm_get_player = requestblocks.SelectPlayer()
 construction_firm.requests = [cfirm_get_blueprint, cfirm_get_player]
 cfirm_build = actionblocks.Construct({})
 construction_firm.actions = [cfirm_build]
+
+''' D '''
+dock = Building()
+dock.name = "dock"
+dock.build_cost = {'wood': 1, 'brick': 2, 'iron': 2}
+dock.fees = {}
+dock.rank = 26
+dock.value = 10
+dock.price = 24
+dock.type = "industrial"
+dock.icon = ['none']
+dock.owner = "blueprint"
+dock.usage_limit = 0
+dock.description = "Unusable. Endgame value. Ships add 4 value each."
+
+''' F '''
+fishery = Building()
+fishery.name = "fishery"
+fishery.build_cost = {'wood': 1, 'clay': 1}
+fishery.fees = {}
+fishery.rank = 3
+fishery.value = fishery.price = 10
+fishery.type = "commercial"
+fishery.icon = ['fisherman']
+fishery.owner = "blueprint"
+fishery.usage_limit = 1
+fishery.description = "Receive 3 Fish plus an additional 1 Fish for each owned 'Fisherman' buildings."
+fishery_select_player = requestblocks.SelectPlayer()
+fishery.requests = [fishery_select_player]
+fishery_get_fish = actionblocks.ReceiveItems('fish',3, 'fisherman', 1)
+fishery.actions = [fishery_get_fish]
+
+''' G '''
+grocery = Building()
+grocery.name = "grocery market"
+grocery.build_cost = {'wood' : 1, 'brick' : 1}
+grocery.fees = {'money': 1}
+grocery.rank = 19
+grocery.value = grocery.price = 10
+grocery.type = "economic"
+grocery.icon = ['none']
+grocery.owner = "blueprint"
+grocery.usage_limit = 1
+grocery.description = "Receive 1 Cattle, 1 Meat, 1 Fish, 1 Smoked Fish, 1 Grain and 1 Bread."
+grocery_get_cattle = actionblocks.ReceiveItems('cattle', 1)
+grocery_get_meat = actionblocks.ReceiveItems('meat', 1)
+grocery_get_fish = actionblocks.ReceiveItems('fish', 1)
+grocery_get_smokedfish = actionblocks.ReceiveItems('smoked fish', 1)
+grocery_get_grain = actionblocks.ReceiveItems('grain', 1)
+grocery_get_bread = actionblocks.ReceiveItems('bread', 1)
+grocery.actions = [grocery_get_cattle, grocery_get_meat, grocery_get_fish, grocery_get_smokedfish, grocery_get_grain, grocery_get_bread]
+
+''' H '''
+hardware = Building()
+hardware.name = "hardware store"
+hardware.build_cost = {'wood' : 3, 'clay' : 1}
+hardware.fees = {'food': 1}
+hardware.rank = 6
+hardware.value = hardware.price = 8
+hardware.type = "commercial"
+hardware.icon = ['hammer', 'fisherman']
+hardware.owner = "blueprint"
+hardware.usage_limit = 1
+hardware.description = "Receive 1 Wood, 1 Brick and 1 Iron."
+hardware_get_wood = actionblocks.ReceiveItems('wood', 1)
+hardware_get_brick = actionblocks.ReceiveItems('brick', 1)
+hardware_get_iron = actionblocks.ReceiveItems('iron', 1)
+hardware.actions = [hardware_get_wood, hardware_get_brick, hardware_get_iron]
+
+''' I '''
+ironworks = Building()
+ironworks.name = "hardware store"
+ironworks.build_cost = {'wood' : 3, 'clay' : 1}
+ironworks.fees = {'food': 3} # food or money ??
+ironworks.rank = 22
+ironworks.value = ironworks.price = 12
+ironworks.type = "industrial"
+ironworks.icon = ['hammer', 'fisherman']
+ironworks.owner = "blueprint"
+ironworks.usage_limit = 1
+ironworks.description = "Receive 3 Iron. An additional 1 Iron is available for 6 Energy."
+ironworks_get_wood = actionblocks.ReceiveItems('wood', 1)
+ironworks_get_brick = actionblocks.ReceiveItems('brick', 1)
+ironworks_get_iron = actionblocks.ReceiveItems('iron', 1)
+ironworks.actions = []

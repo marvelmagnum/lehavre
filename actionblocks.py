@@ -40,17 +40,20 @@ class AddItems:
 
 
 class ReceiveItems:
-    """ Adds 'item' type to inventory in the specified 'quantity'. Adds 'bonus' amt for 'icons' """
+    """ Adds 'item' type to inventory in the specified 'quantity'. Adds 'bonus' amt for 'icons'.
+        'limit' determines max bonus. 0 mean no limit."""
     item = "undefined"
     quantity = 0
     icon = "none"
     bonus = 0
+    limit = 0
 
-    def __init__(self, item, qty, icon = 'none', bonus = 0):
+    def __init__(self, item, qty, icon = 'none', bonus = 0, limit = 0):
         self.item = item
         self.quantity = qty
         self.icon = icon
         self.bonus = bonus
+        self.limit = limit
 
     '''args: 0 = game_state, 1 = player'''
     def do(self, args):
@@ -68,6 +71,8 @@ class ReceiveItems:
                             count += 1
                             break
             total = self.bonus * count
+            if self.limit > 0 and total > self.limit:
+                total = self.limit
             if total > 0:
                 args[0].inventory[self.item] += total
                 print(" and an additional " + str(total) + " " + self.item.title() + " for your " + self.icon.title() + " buildings.")
