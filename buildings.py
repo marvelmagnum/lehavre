@@ -207,11 +207,28 @@ business_office.description = "Trade 4 goods for 1 Steel and/or 1 item for 1 Cha
 boffice_request_steel = requestblocks.SetTradeRequest(['steel'])
 boffice_request_ChLeBr = requestblocks.SetTradeRequest(['charcoal', 'leather', 'brick'])
 business_office.requests = [boffice_request_steel, boffice_request_ChLeBr]
-boffice_trade_steel = actionblocks.TradeItems([('item',4)],['steel'])
-boffice_trade_ChLeBr = actionblocks.TradeItems([('item',1)],['charcoal', 'leather', 'brick'])
+boffice_trade_steel = actionblocks.TradeItems([('any',4)],['steel'])
+boffice_trade_ChLeBr = actionblocks.TradeItems([('any',1)],['charcoal', 'leather', 'brick'])
 business_office.actions = [boffice_trade_steel, boffice_trade_ChLeBr]
 
 ''' C '''
+charcoal_kiln = Building()
+charcoal_kiln.name = "charcoal kiln"
+charcoal_kiln.build_cost = {'clay' : 1}
+charcoal_kiln.fees = {}
+charcoal_kiln.rank = 7
+charcoal_kiln.value = charcoal_kiln.price = 8
+charcoal_kiln.type = "craftsman"
+charcoal_kiln.icon = ['none']
+charcoal_kiln.owner = "blueprint"
+charcoal_kiln.usage_limit = 1
+charcoal_kiln.description = "Convert Wood to Charcoal."
+ckiln_get_quantity = requestblocks.GetQuantity('wood')
+charcoal_kiln.requests = [ckiln_get_quantity]
+ckiln_give_wood = actionblocks.RemoveItems('wood', 1)
+ckiln_get_charcoal = actionblocks.AddItems('charcoal',1)
+charcoal_kiln.actions = [ckiln_give_wood, ckiln_get_charcoal]
+
 construction_firm = Building()
 construction_firm.name = "construction firm"
 construction_firm.build_cost = {}

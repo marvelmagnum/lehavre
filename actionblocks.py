@@ -195,7 +195,7 @@ class SellItems:
         args[0].inventory['money'] += total
         return True
 
-
+# TODO:: Fix a bug where a usage fees will be refunded if there are more than 1 TradeItem actions and any one of them fails.
 class TradeItems:
     """ Trades items based on the trade rates set: the 'offer package' has a list of tuples (item and rate)
         'trade package' has a list of tradeable items corresponding to the package """
@@ -207,6 +207,90 @@ class TradeItems:
         self.offer_package = offer_package
         self.trade_package = trade_package
 
-    '''args: 0 = game_state, 1,2,.... = tuples of requested 'trade items' and 'quantity' desired'''
+    '''args: 0 = game_state, 1 = tuple of requested 'trade item' and 'quantity' desired'''
     def do(self, args):
-        for
+        for idx, arg in enumerate(args):
+            if idx == 0:
+                continue
+            if arg[0] in self.trade_package:
+                request_param = args[idx]
+                break
+        if request_param[1] == 0:
+            return True
+        trade_item = request_param[0]
+        trade_amount = request_param[1]
+        required_items = {}
+        for item_tuple in self.offer_package:
+            required_items[item_tuple[0]] = trade_amount * item_tuple[1]
+        inv_menu = []
+        for ikey, ivalue in args[0].inventory.items():
+            if ivalue > 0 and ikey != 'money':
+                inv_menu.append((ikey, ivalue))
+        for key, value in required_items.items():
+            if key == 'any':
+                current_given = value
+                while True:
+                    print("You have:")
+                    idx = 1
+                    total_inv = 0
+                    for ikey, ivalue in inv_menu:
+                        print(str(idx) + ". " + ikey.title() + ": " + str(ivalue))
+                        total_inv += ivalue
+                        idx += 1
+                    if total_inv < current_given:
+                        print ("You don't have enough goods to trade " + trade_item.title() + ".")
+                        return False
+                    sel = input("You need to give any " + str(current_given) + " goods for " + trade_item.title() + ". Select item ? ")
+                    while True:
+                        num = input("You got " + str(inv_menu[int(sel) - 1][1]) + ' '
+                                    + inv_menu[int(sel) - 1][0].title() + ". How many ? ")
+                        if int(num) > inv_menu[int(sel) - 1][1]:
+                            print("You don't have that much.")
+                            continue
+                        stuff = inv_menu[int(sel) - 1][0]
+                        qty = inv_menu[int(sel) - 1][1] - int(num)
+                        current_given -= int(num)
+                        print("You gave " + num + " " + inv_menu[int(sel) - 1][0].title() + ". ", end="")
+                        if qty > 0:
+                            inv_menu[int(sel) - 1] = (stuff, qty)
+                        else:
+                            del inv_menu[int(sel) - 1]
+                        break
+                    if current_given <= 0:
+                        print()
+                        break
+                    else:
+                        print("You need to give " + str(current_given) + " more goods.")
+            else:
+                idx = 0
+                for ikey, ivalue in inv_menu:
+                    if ikey == key:
+                        if ivalue < value:
+                            print("You don't have enough " + key.title() + " to trade for " + trade_item.title() + ".")
+                            return False
+                        print("You have " + str(ivalue) + " " + key.title() + ". Give " + str(value) + " ?")
+                        print("1. Yes")
+                        print("2. No")
+                        ans = input("? ")
+                        if int(ans) == 1:
+                            stuff = inv_menu[idx][0]
+                            qty = inv_menu[idx][1] - value
+                            inv_menu[idx] = (stuff, qty)
+                            print("You gave " + str(value) + " " + key.title() + ".")
+                            break
+                        else:
+                            return False
+                    idx += 1
+        money = args[0].inventory['money']
+        args[0].inventory = {}
+        args[0].inventory['money'] = money
+        for item, qty in inv_menu:
+            args[0].inventory[item] = qty
+        if trade_item in args[0].inventory:
+            args[0].inventory[trade_item] += trade_amount
+        else:
+            args[0].inventory[trade_item] = trade_amount
+        print("You received " + str(trade_amount) + " " + trade_item.title() + " through trading.")
+        return True
+
+

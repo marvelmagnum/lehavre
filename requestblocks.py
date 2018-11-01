@@ -41,7 +41,6 @@ class SelectInventoryItems:
                 inv_menu.append((key,value))
         selected = {}
         while (True):
-
             print("Select items from inventory:")
             idx = 1
             for item, quantity in inv_menu:
@@ -103,7 +102,7 @@ class SetTradeRequest:
 
     def get(self, game_state):
         if len(self.choices) == 1:
-            print("Trade " + self.choices[0].title + " ? ")
+            print("Trade " + self.choices[0].title() + " ? ")
             print("1. Yes")
             print("2. No")
             ans = input("? ")
@@ -114,10 +113,10 @@ class SetTradeRequest:
         if len(self.choices) > 1:
             print("Select commodity to trade:")
             for idx, item in enumerate(self.choices):
-                print(str(idx+1) + ". " + item)
-            print(str(idx+1) + ". Nothing")
+                print(str(idx+1) + ". " + item.title())
+            print(str(idx+2) + ". Nothing")
             ans = input("? ")
-            if int(ans) == idx+1:
-                return self.choices[0], 0
+            if int(ans) == idx+2:
+                return self.choices[int(ans)-2], 0
             qty = input("How many " + self.choices[int(ans)-1].title() + " do you want ? ")
-            return self.choices[int(ans)-1], qty
+            return self.choices[int(ans)-1], int(qty)
