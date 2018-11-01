@@ -18,7 +18,8 @@ class GameState:
     constructed = [buildings.building_firm_a,
                    buildings.building_firm_b,
                    buildings.construction_firm,
-                   buildings.charcoal_kiln]
+                   buildings.clay_mound]
+
 
     blueprints = [buildings.abattoir,
                   buildings.arts_center,
@@ -28,7 +29,9 @@ class GameState:
                   buildings.black_market,
                   buildings.brick_works,
                   buildings.bridge_over_seine,
-                  buildings.business_office]
+                  buildings.business_office,
+                  buildings.charcoal_kiln,
+                  buildings.church]
 
 
 game_state = GameState()

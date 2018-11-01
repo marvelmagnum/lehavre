@@ -39,6 +39,43 @@ class AddItems:
         return True
 
 
+class ReceiveItems:
+    """ Adds 'item' type to inventory in the specified 'quantity'. Adds 'bonus' amt for 'icons' """
+    item = "undefined"
+    quantity = 0
+    icon = "none"
+    bonus = 0
+
+    def __init__(self, item, qty, icon = 'none', bonus = 0):
+        self.item = item
+        self.quantity = qty
+        self.icon = icon
+        self.bonus = bonus
+
+    '''args: 0 = game_state, 1 = player'''
+    def do(self, args):
+        if self.item in args[0].inventory:
+            args[0].inventory[self.item] += self.quantity
+        else:
+            args[0].inventory[self.item] = self.quantity
+        print("You received " + str(self.quantity) + " " + self.item.title(), end="")
+        if self.icon != 'none':
+            count = 0
+            for building in args[0].constructed:
+                if args[1] == building.owner:
+                    for ic in building.icon:
+                        if ic == self.icon:
+                            count += 1
+                            break
+            total = self.bonus * count
+            if total > 0:
+                args[0].inventory[self.item] += total
+                print(" and an additional " + str(total) + " " + self.item.title() + " for your " + self.icon.title() + " buildings.")
+            else:
+                print(".")
+        return True
+
+
 class Construct:
     """ Builds a blueprint, moves it to constructed, adds owner, deducts build cost applying the 'discount' """
     discounts = {'item' : 0}
@@ -282,8 +319,7 @@ class TradeItems:
                             return False
                     idx += 1
         money = args[0].inventory['money']
-        args[0].inventory = {}
-        args[0].inventory['money'] = money
+        args[0].inventory = {'money' : money}
         for item, qty in inv_menu:
             args[0].inventory[item] = qty
         if trade_item in args[0].inventory:
@@ -294,3 +330,21 @@ class TradeItems:
         return True
 
 
+class CheckResources:
+    """ Check if the 'resources' are available with the player in the specified 'quantity'"""
+    resources = {'item' : 0}
+
+    def __init__(self, resource_list):
+        self.resources = resource_list
+
+    '''args: 0 = game_state'''
+    def do(self, args):
+        for key, value in self.resources.items():
+            if key in args[0].inventory:
+                if args[0].inventory[key] < value:
+                    print("You don't have enough " + key.title())
+                    return False
+            else:
+                print("You don't have any " + key.title())
+                return False
+        return True

@@ -229,6 +229,39 @@ ckiln_give_wood = actionblocks.RemoveItems('wood', 1)
 ckiln_get_charcoal = actionblocks.AddItems('charcoal',1)
 charcoal_kiln.actions = [ckiln_give_wood, ckiln_get_charcoal]
 
+church = Building()
+church.name = "church"
+church.build_cost = {'wood' : 5, 'brick' : 3, 'iron' : 1}
+church.fees = {}
+church.rank = 30
+church.value = 26
+church.price = 0
+church.type = "public"
+church.icon = ['none']
+church.owner = "blueprint"
+church.usage_limit = 1
+church.description = "Un-purchasable. Receive an additional 5 Bread and 3 Fish if you have 5 Bread and 2 Fish."
+church_check_resources = actionblocks.CheckResources({'bread' : 5, 'fish' : 2})
+church_get_bread = actionblocks.ReceiveItems('bread', 5)
+church_get_fish = actionblocks.ReceiveItems('fish', 3)
+church.actions = [church_check_resources, church_get_bread, church_get_fish]
+
+clay_mound = Building()
+clay_mound.name = "clay mound"
+clay_mound.build_cost = {}
+clay_mound.fees = {'food': 1}
+clay_mound.rank = 10
+clay_mound.value = clay_mound.price = 2
+clay_mound.type = "none"
+clay_mound.icon = ['none']
+clay_mound.owner = "blueprint"
+clay_mound.usage_limit = 1
+clay_mound.description = "Un-buildable. Receive 3 Clay plus an additional 1 Clay for each owned 'Hammer' buildings."
+cmound_select_player = requestblocks.SelectPlayer()
+clay_mound.requests = [cmound_select_player]
+cmound_get_clay = actionblocks.ReceiveItems('clay',3, 'hammer', 1)
+clay_mound.actions = [cmound_get_clay]
+
 construction_firm = Building()
 construction_firm.name = "construction firm"
 construction_firm.build_cost = {}

@@ -114,6 +114,8 @@ def check_availability(resource_type, amount):
             return False
 
 
+
+
 def occupy_building(building):
     """ current player occupied building. free building occupied by player previously """
     building_name = gamestate.game_state.location[gamestate.game_state.current_player]
