@@ -36,6 +36,7 @@ class AddItems:
             args[0].inventory[self.item] += int(args[1] * self.modifier)
         else:
             args[0].inventory[self.item] = int(args[1] * self.modifier)
+        print("You received " + str(int(args[1] * self.modifier)) + " " + self.item.title() + ".")
         return True
 
 
@@ -71,13 +72,12 @@ class ReceiveItems:
                             count += 1
                             break
             total = self.bonus * count
-            if self.limit > 0 and total > self.limit:
+            if 0 < self.limit < total:
                 total = self.limit
             if total > 0:
                 args[0].inventory[self.item] += total
-                print(" and an additional " + str(total) + " " + self.item.title() + " for your " + self.icon.title() + " buildings.")
-            else:
-                print(".")
+                print(" and an additional " + str(total) + " " + self.item.title() + " for your " + self.icon.title() + " buildings", end="")
+        print(".")
         return True
 
 
@@ -150,6 +150,8 @@ class SpendEnergy:
     '''args: 0 = game_state, 1 = amt'''
     def do(self, args):
         required = math.ceil(args[1] * self.modifier)
+        if required == 0:
+            return True
         print(str(required) + " Energy required.")
         if gamefunctions.check_availability('energy', required):
             gamefunctions.collect_cost('energy', required)
@@ -352,4 +354,28 @@ class CheckResources:
             else:
                 print("You don't have any " + key.title())
                 return False
+        return True
+
+
+class ExchangeItem:
+    """ Exchange for 'item' based on the 'options' """
+    item = 'item'
+    options = []
+
+    def __init__(self, item, options):
+        self.item = item
+        self.options = options
+
+    ''' args: 0 = game state, 1 = tuple (item, amt of item, index of option selected) in GetExchange request'''
+    def do(self, args):
+        item_tuple = args[1]
+        if args[0].inventory[item_tuple[0]] < item_tuple[1]:
+            print("You don't have enough " + item_tuple[0].title() + ".")
+            return False
+        args[0].inventory[item_tuple[0]] -= item_tuple[1]
+        if self.item in args[0].inventory:
+            args[0].inventory[self.item] += self.options[item_tuple[2]]
+        else:
+            args[0].inventory[self.item] = self.options[item_tuple[2]]
+        print("You received " + str(self.options[item_tuple[2]]) + " " + self.item.title() + ".")
         return True

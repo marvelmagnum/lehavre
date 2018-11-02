@@ -6,19 +6,8 @@ class GetQuantity:
         self.item = item
 
     def get(self, game_state):
-        return int(input("How many " + self.item + ": "))
+        return int(input("How many " + self.item.title() + ": "))
 
-class SetQuantity:
-    """ Sets quantity of an 'item' type """
-    item = "undefined"
-    quantity = 0
-
-    def __init__(self, item, qty):
-        self.item = item
-        self.quantity = qty
-
-    def get(self, game_state):
-        return int(input("How many " + self.item + ": "))
 
 class SelectBlueprint:
     """ Gets a building from the available blueprints """
@@ -131,3 +120,20 @@ class SetTradeRequest:
                 return self.choices[int(ans)-2], 0
             qty = input("How many " + self.choices[int(ans)-1].title() + " do you want ? ")
             return self.choices[int(ans)-1], int(qty)
+
+
+class GetExchangeRequest:
+    """ Sets up 'options' for a specific 'item' for exchange """
+    item = 'item'
+    options = []
+
+    def __init__(self, item, options):
+        self.item = item
+        self.options = options
+
+    def get(self, game_state):
+        print("How many " + self.item.title() + " ? ")
+        for idx, opt in enumerate(self.options):
+            print(str(idx+1) + ". " + str(opt))
+        sel = input("? ")
+        return self.item, self.options[int(sel)-1], int(sel)-1

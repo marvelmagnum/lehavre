@@ -6,15 +6,28 @@ def get_entry_cost(building):
     """ Get the entry cost of a building """
     if not building.fees:
         return None # free
-    print(building.name.title() + " usage fees: ", end = "")
-    for key, value in building.fees.items():
-        print(key.title() + ' [' + str(value) + '] ')
-    for key, value in building.fees.items():
-        if check_availability(key, value):
-            return collect_cost(key, value)
-        else:
-            print ("You don't have enough " + key + ".")
-            return None
+    print(building.name.title() + " usage fees: ", end="")
+    if len(building.fees) == 1:
+        for key, value in building.fees[0].items():
+            print(key.title() + ' [' + str(value) + '] ')
+        for key, value in building.fees[0].items():
+            if check_availability(key, value):
+                return collect_cost(key, value)
+            else:
+                print ("You don't have enough " + key + ".")
+                return None
+    else:
+        print()
+        for idx, fee_entry in enumerate(building.fees):
+            for key, value in fee_entry.items():
+                print(str(idx+1) + ". " + key.title() + ' [' + str(value) + '] ')
+        opt = input("Select an option: ")
+        for key, value in building.fees[int(opt)-1].items():
+            if check_availability(key, value):
+                return collect_cost(key, value)
+            else:
+                print ("You don't have enough " + key + ".")
+                return None
 
 
 def collect_cost(resource_type, amount):
@@ -112,8 +125,6 @@ def check_availability(resource_type, amount):
             return True
         else:
             return False
-
-
 
 
 def occupy_building(building):

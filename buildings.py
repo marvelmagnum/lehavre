@@ -45,7 +45,7 @@ class Building:
 abattoir = Building()
 abattoir.name = "abattoir"
 abattoir.build_cost = {'wood' : 1, 'clay' : 1, 'iron' : 1}
-abattoir.fees = {'money' : 2}
+abattoir.fees = [{'money' : 2}]
 abattoir.rank = 9
 abattoir.value = abattoir.price = 8
 abattoir.type = "craftsman"
@@ -63,7 +63,7 @@ abattoir.actions = [abatr_give_cattle, abatr_get_meat, abatr_get_hide]
 arts_center = Building()
 arts_center.name = "arts center"
 arts_center.build_cost = {'wood': 1, 'clay': 1}
-arts_center.fees = {'food' : 1}
+arts_center.fees = [{'food' : 1}]
 arts_center.rank = 11
 arts_center.value = arts_center.price = 10
 arts_center.type = "craftsman"
@@ -80,7 +80,7 @@ arts_center.actions = [artct_collect_tickets]
 bakehouse = Building()
 bakehouse.name = "bakehouse"
 bakehouse.build_cost = {'clay': 2}
-bakehouse.fees = {'food' : 1}
+bakehouse.fees = [{'food' : 1}]
 bakehouse.rank = 5
 bakehouse.value = bakehouse.price = 8
 bakehouse.type = "craftsman"
@@ -99,7 +99,7 @@ bakehouse.actions = [bakeh_give_grain, bakeh_spend_energy, bakeh_get_bread, bake
 black_market = Building()
 black_market.name = "black market"
 black_market.build_cost = {}
-black_market.fees = {'food' : 1}
+black_market.fees = [{'food' : 1}]
 black_market.rank = 13
 black_market.value = black_market.price = 2
 black_market.type = "none"
@@ -115,7 +115,7 @@ black_market.actions = [blkmkt_collect_empty_offers]
 bank = Building()
 bank.name = "bank"
 bank.build_cost = {'brick': 4, 'steel': 1}
-bank.fees = {}
+bank.fees = []
 bank.rank = 29
 bank.value = 16
 bank.price = 40
@@ -128,7 +128,7 @@ bank.description = "Unusable. Endgame value. Industrial buildings add 3 value ea
 brick_works = Building()
 brick_works.name = "brickworks"
 brick_works.build_cost = {'wood' : 2, 'clay' : 1, 'iron' : 1}
-brick_works.fees = {'food' : 1}
+brick_works.fees = [{'food' : 1}]
 brick_works.rank = 14
 brick_works.value = brick_works.price = 14
 brick_works.type = "industrial"
@@ -147,7 +147,7 @@ brick_works.actions = [brkwrks_give_clay, brkwrks_spend_energy, brkwrks_get_bric
 bridge_over_seine = Building()
 bridge_over_seine.name = "bridge over the seine"
 bridge_over_seine.build_cost = {'iron' : 3}
-bridge_over_seine.fees = {'money' : 2}
+bridge_over_seine.fees = [{'money' : 2}]
 bridge_over_seine.rank = 27
 bridge_over_seine.value = bridge_over_seine.price = 16
 bridge_over_seine.type = "none"
@@ -163,12 +163,12 @@ bridge_over_seine.actions = [bridge_sell_items]
 building_firm_a = Building()
 building_firm_a.name = "building firm (a)"
 building_firm_a.build_cost = {}
-building_firm_a.fees = {}
+building_firm_a.fees = []
 building_firm_a.rank = 0
 building_firm_a.value = building_firm_a.price = 4
 building_firm_a.type = "craftsman"
 building_firm_a.icon = ['hammer']
-building_firm_a.owner = "none"
+building_firm_a.owner = "game"
 building_firm_a.usage_limit = 1
 building_firm_a.description = "Build 1 building from the available blueprints."
 bfirma_get_blueprint = requestblocks.SelectBlueprint()
@@ -180,12 +180,12 @@ building_firm_a.actions = [bfirma_build]
 building_firm_b = Building()
 building_firm_b.name = "building firm (b)"
 building_firm_b.build_cost = {}
-building_firm_b.fees = {'food' : 1}
+building_firm_b.fees = [{'food' : 1}]
 building_firm_b.rank = 0
 building_firm_b.value = building_firm_b.price = 6
 building_firm_b.type = "craftsman"
 building_firm_b.icon = ['hammer']
-building_firm_b.owner = "none"
+building_firm_b.owner = "game"
 building_firm_b.usage_limit = 1
 building_firm_b.description = "Build 1 building from the available blueprints."
 bfirmb_get_blueprint = requestblocks.SelectBlueprint()
@@ -197,7 +197,7 @@ building_firm_b.actions = [bfirmb_build]
 business_office = Building()
 business_office.name = "business office"
 business_office.build_cost = {'wood' : 4, 'clay' : 1}
-business_office.fees = {'money' : 1}
+business_office.fees = [{'money' : 1}]
 business_office.rank = 21
 business_office.value = business_office.price = 12
 business_office.type = "economic"
@@ -216,7 +216,7 @@ business_office.actions = [boffice_trade_steel, boffice_trade_ChLeBr]
 charcoal_kiln = Building()
 charcoal_kiln.name = "charcoal kiln"
 charcoal_kiln.build_cost = {'clay' : 1}
-charcoal_kiln.fees = {}
+charcoal_kiln.fees = []
 charcoal_kiln.rank = 7
 charcoal_kiln.value = charcoal_kiln.price = 8
 charcoal_kiln.type = "craftsman"
@@ -233,7 +233,7 @@ charcoal_kiln.actions = [ckiln_give_wood, ckiln_get_charcoal]
 church = Building()
 church.name = "church"
 church.build_cost = {'wood' : 5, 'brick' : 3, 'iron' : 1}
-church.fees = {}
+church.fees = []
 church.rank = 30
 church.value = 26
 church.price = 0
@@ -250,7 +250,7 @@ church.actions = [church_check_resources, church_get_bread, church_get_fish]
 clay_mound = Building()
 clay_mound.name = "clay mound"
 clay_mound.build_cost = {}
-clay_mound.fees = {'food': 1}
+clay_mound.fees = [{'food': 1}]
 clay_mound.rank = 10
 clay_mound.value = clay_mound.price = 2
 clay_mound.type = "none"
@@ -266,7 +266,7 @@ clay_mound.actions = [cmound_get_clay]
 cokery = Building()
 cokery.name = "cokery"
 cokery.build_cost = {'brick' : 2, 'iron' : 2}
-cokery.fees = {'money' : 1}
+cokery.fees = [{'money' : 1}]
 cokery.rank = 25
 cokery.value = cokery.price = 18
 cokery.type = "industrial"
@@ -284,7 +284,7 @@ cokery.actions = [cokery_give_coal, cokery_get_coke, cokery_get_money]
 colliery = Building()
 colliery.name = "colliery"
 colliery.build_cost = {'wood': 1, 'clay': 3}
-colliery.fees = {'food': 2}
+colliery.fees = [{'food': 2}]
 colliery.rank = 16
 colliery.value = colliery.price = 10
 colliery.type = "industrial"
@@ -300,7 +300,7 @@ colliery.actions = [colliery_get_coal]
 construction_firm = Building()
 construction_firm.name = "construction firm"
 construction_firm.build_cost = {}
-construction_firm.fees = {'food' : 2}
+construction_firm.fees = [{'food' : 2}]
 construction_firm.rank = 0
 construction_firm.value = construction_firm.price = 8
 construction_firm.type = "industrial"
@@ -318,7 +318,7 @@ construction_firm.actions = [cfirm_build]
 dock = Building()
 dock.name = "dock"
 dock.build_cost = {'wood': 1, 'brick': 2, 'iron': 2}
-dock.fees = {}
+dock.fees = []
 dock.rank = 26
 dock.value = 10
 dock.price = 24
@@ -332,7 +332,7 @@ dock.description = "Unusable. Endgame value. Ships add 4 value each."
 fishery = Building()
 fishery.name = "fishery"
 fishery.build_cost = {'wood': 1, 'clay': 1}
-fishery.fees = {}
+fishery.fees = []
 fishery.rank = 3
 fishery.value = fishery.price = 10
 fishery.type = "commercial"
@@ -349,7 +349,7 @@ fishery.actions = [fishery_get_fish]
 grocery = Building()
 grocery.name = "grocery market"
 grocery.build_cost = {'wood' : 1, 'brick' : 1}
-grocery.fees = {'money': 1}
+grocery.fees = [{'money': 1}]
 grocery.rank = 19
 grocery.value = grocery.price = 10
 grocery.type = "economic"
@@ -369,7 +369,7 @@ grocery.actions = [grocery_get_cattle, grocery_get_meat, grocery_get_fish, groce
 hardware = Building()
 hardware.name = "hardware store"
 hardware.build_cost = {'wood' : 3, 'clay' : 1}
-hardware.fees = {'food': 1}
+hardware.fees = [{'food': 1}]
 hardware.rank = 6
 hardware.value = hardware.price = 8
 hardware.type = "commercial"
@@ -384,17 +384,36 @@ hardware.actions = [hardware_get_wood, hardware_get_brick, hardware_get_iron]
 
 ''' I '''
 ironworks = Building()
-ironworks.name = "hardware store"
-ironworks.build_cost = {'wood' : 3, 'clay' : 1}
-ironworks.fees = {'food': 3} # food or money ??
+ironworks.name = "ironworks"
+ironworks.build_cost = {'wood': 1, 'brick': 2}
+ironworks.fees = [{'food': 3}, {'money': 1}]
 ironworks.rank = 22
 ironworks.value = ironworks.price = 12
 ironworks.type = "industrial"
-ironworks.icon = ['hammer', 'fisherman']
+ironworks.icon = ['hammer']
 ironworks.owner = "blueprint"
 ironworks.usage_limit = 1
 ironworks.description = "Receive 3 Iron. An additional 1 Iron is available for 6 Energy."
-ironworks_get_wood = actionblocks.ReceiveItems('wood', 1)
-ironworks_get_brick = actionblocks.ReceiveItems('brick', 1)
-ironworks_get_iron = actionblocks.ReceiveItems('iron', 1)
-ironworks.actions = []
+ironworks_get_energy = requestblocks.GetQuantity ('energy')
+ironworks.requests = [ironworks_get_energy]
+ironworks_spend_energy = actionblocks.SpendEnergy(1)
+ironworks_get_addon = actionblocks.AddItems('iron',0.17)
+ironworks_get_iron = actionblocks.ReceiveItems('iron', 3)
+ironworks.actions = [ironworks_spend_energy, ironworks_get_addon, ironworks_get_iron]
+
+''' J '''
+joinery = Building()
+joinery.name = "joinery"
+joinery.build_cost = {'wood': 3}
+joinery.fees = [{'food': 1}]
+joinery.rank = 4
+joinery.value = joinery.price = 8
+joinery.type = "commercial"
+joinery.icon = ['hammer']
+joinery.owner = "blueprint"
+joinery.usage_limit = 1
+joinery.description = "Sell 1-3 Wood for 5-7 Money."
+joinery_exchange_wood = requestblocks.GetExchangeRequest('wood', [1,2,3])
+joinery.requests = [joinery_exchange_wood]
+joinery_get_money = actionblocks.ExchangeItem('money',[5,6,7])
+joinery.actions = [joinery_get_money]
