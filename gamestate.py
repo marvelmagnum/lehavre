@@ -17,7 +17,7 @@ class GameState:
 
     constructed = [buildings.building_firm_a,
                    buildings.building_firm_b,
-                   buildings.construction_firm,
+                   buildings.construction_firm
                    ]
 
 
@@ -40,7 +40,9 @@ class GameState:
                   buildings.grocery,
                   buildings.hardware,
                   buildings.ironworks,
-                  buildings.joinery
+                  buildings.joinery,
+                  buildings.court,
+                  buildings.market
                   ]
 
 

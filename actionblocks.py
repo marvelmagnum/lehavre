@@ -379,3 +379,66 @@ class ExchangeItem:
             args[0].inventory[self.item] = self.options[item_tuple[2]]
         print("You received " + str(self.options[item_tuple[2]]) + " " + self.item.title() + ".")
         return True
+
+
+class CloseLoans:
+    """ Close loans """
+
+    ''' args: 0 = game state '''
+    def do(self, args):
+        if not 'loan' in args[0].inventory or args[0].inventory['loan'] == 0:
+            print("You don't have any Loan.")
+            return False
+        elif args[0].inventory['loan'] == 1:
+            args[0].inventory['loan'] = 0
+            print("You closed 1 Loan.")
+        elif args[0].inventory['loan'] == 2:
+            args[0].inventory['loan'] -= 1
+            args[0].inventory['money'] += 2
+            print("You closed 1 Loan and received 2 Money.")
+        else:
+            args[0].inventory['loan'] -= 2
+            print("You closed 2 Loans.")
+        return True
+
+
+class CollectStandardItems:
+    """ Select and receive standard items. 'icon' increases the selection limit """
+    type = 'none'
+    limit = 0
+
+    def __init__(self, limit, type):
+        self.limit = limit
+        self.type = type
+
+    ''' args: 0 = game state, 1 = player'''
+    def do(self, args):
+        choices = []
+        for key,value in resources.resource_map.items():
+            if value.category == 'standard':
+                choices.append(key)
+        for building in args[0].constructed:
+            if building.owner == args[1] and building.type == self.type:
+                self.limit += 1
+        print("You can collect " + str(self.limit) + " items.")
+        selected = []
+        while len(selected) < self.limit:
+            print("Select item:")
+            for idx, item in enumerate(choices):
+                print(str(idx+1) + '. ' + item.title())
+            sel = input("? ")
+            selected.append(choices.pop(int(sel)-1))
+        print ("You received ", end="")
+        for idx, item in enumerate(selected):
+            if item in args[0].inventory:
+                args[0].inventory[item] += 1
+            else:
+                args[0].inventory[item] = 1
+            if idx < len(selected) - 2:
+                print(item.title(), end=", ")
+            elif idx == len(selected) - 2:
+                print(item.title(), end=" and ")
+            else:
+                print(item.title(), end=".")
+        print()
+        return True

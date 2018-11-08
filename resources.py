@@ -13,6 +13,7 @@ class Resource:
         self.category = category
 
 
+loan = Resource('loan', 0, 0, 0, 'undefined')
 money = Resource('money', 0, 1, 1, 'undefined')
 wood = Resource('wood', 1, 0, 1, 'standard')
 charcoal = Resource('charcoal', 3, 0, 2, 'upgraded')
@@ -31,7 +32,8 @@ meat = Resource('meat', 0, 3, 2, 'upgraded')
 hides = Resource('hides', 0, 0, 2, 'standard')
 leather = Resource('leather', 0, 0, 4, 'upgraded')
 
-resource_map = {'money': money,
+resource_map = {'loan': loan,
+                'money': money,
                 'fish': fish,
                 'wood': wood,
                 'clay': clay,

@@ -417,3 +417,35 @@ joinery_exchange_wood = requestblocks.GetExchangeRequest('wood', [1,2,3])
 joinery.requests = [joinery_exchange_wood]
 joinery_get_money = actionblocks.ExchangeItem('money',[5,6,7])
 joinery.actions = [joinery_get_money]
+
+''' L '''
+court = Building()
+court.name = "local court"
+court.build_cost = {'wood': 3, 'clay': 2}
+court.fees = []
+court.rank = 15
+court.value = court.price = 16
+court.type = "public"
+court.icon = []
+court.owner = "blueprint"
+court.usage_limit = 1
+court.description = "Close Loans. If you have 1, close it. If you have 2, close 1 and get 2 Money. If you have more, close 2."
+court_close_loans = actionblocks.CloseLoans()
+court.actions = [court_close_loans]
+
+''' M '''
+market = Building()
+market.name = "marketplace"
+market.build_cost = {'wood': 2}
+market.fees = [{'food': 2}, {'money': 1}]
+market.rank = 1
+market.value = market.price = 6
+market.type = "none"
+market.icon = []
+market.owner = "blueprint"
+market.usage_limit = 1
+market.description = "Receive 2 different standard item and an additional item for each owned 'Craftsman' building."
+market_select_player = requestblocks.SelectPlayer()
+market.requests = [market_select_player]
+market_collect_items = actionblocks.CollectStandardItems(2,'craftsman')
+market.actions = [market_collect_items]
