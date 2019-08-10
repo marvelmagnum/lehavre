@@ -42,7 +42,8 @@ class GameState:
                   buildings.ironworks,
                   buildings.joinery,
                   buildings.court,
-                  buildings.market
+                  buildings.market,
+                  buildings.sawmill,
                   ]
 
 

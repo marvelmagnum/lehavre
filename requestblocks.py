@@ -10,11 +10,21 @@ class GetQuantity:
 
 
 class SelectBlueprint:
-    """ Gets a building from the available blueprints """
+    """ Gets a building from the available blueprints. setting 'reqc_item' only allows selection of blueprints that require it. """
+    reqd_item = "undefined"
+
+    def __init__(self, item = 'undefined'):
+        self.reqd_item = item
+
     def get(self, game_state):
         if len(game_state.blueprints) == 0:
             return None
-        print("Select building to construct:")
+
+        print("Select building to construct", end="")
+        if self.reqd_item != 'undefined':
+            print(" (must require " + self.reqd_item.title() + "):")
+        else:
+            print(":")
         idx = 1
         for blueprint in game_state.blueprints:
             print(str(idx) + ": " + blueprint.name.title(), end=" [ ")
@@ -25,8 +35,13 @@ class SelectBlueprint:
                     print(key.title() + "(" + str(value) + ")", end=" ")
                 print(']')
             idx += 1
-        sel = input("? ")
-        return game_state.blueprints[int(sel)-1]
+        while (True):
+            sel = input("? ")
+            if self.reqd_item != 'undefined' and self.reqd_item not in game_state.blueprints[int(sel)-1].build_cost.keys():
+                print ("Building must require " + self.reqd_item.title() + " to construct. Select again.");
+                continue
+            else:
+                return game_state.blueprints[int(sel)-1]
 
 
 class SelectInventoryItems:

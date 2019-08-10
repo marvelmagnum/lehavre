@@ -14,7 +14,7 @@ class Building:
     icon = ['none'] # icons: none, hammer, fisherman
     owner = "undefined" # owners: blueprint, game, p1, p2, ...
     current_user = "none"  #users: none, p1, p2, ...
-    usage_limit = 0
+    usage_limit = 0 #how many times building can use used. unusable building are 0
     description = "blah blah blah"
 
     ''' 
@@ -449,3 +449,23 @@ market_select_player = requestblocks.SelectPlayer()
 market.requests = [market_select_player]
 market_collect_items = actionblocks.CollectStandardItems(2,'craftsman')
 market.actions = [market_collect_items]
+
+''' S '''
+sawmill = Building()
+sawmill.name = "sawmill"
+sawmill.build_cost = {'clay': 1, 'iron': 1}
+sawmill.fees = []
+sawmill.rank = 2
+sawmill.value = sawmill.price = 14
+sawmill.type = "industrial"
+sawmill.icon = ['hammer']
+sawmill.owner = "game"
+sawmill.usage_limit = 1
+sawmill.description = "Build 1 building from the available blueprints that requires wood using 1 less wood."
+sawmill_get_blueprint = requestblocks.SelectBlueprint('wood')
+sawmill_get_player = requestblocks.SelectPlayer()
+sawmill.requests = [sawmill_get_blueprint, sawmill_get_player]
+sawmill_build = actionblocks.Construct({'wood': 1})
+sawmill.actions = [sawmill_build]
+
+shipping_line = Building()
