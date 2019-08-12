@@ -459,7 +459,7 @@ sawmill.rank = 2
 sawmill.value = sawmill.price = 14
 sawmill.type = "industrial"
 sawmill.icon = ['hammer']
-sawmill.owner = "game"
+sawmill.owner = "blueprint"
 sawmill.usage_limit = 1
 sawmill.description = "Build 1 building from the available blueprints that requires wood using 1 less wood."
 sawmill_get_blueprint = requestblocks.SelectBlueprint('wood')
@@ -469,3 +469,18 @@ sawmill_build = actionblocks.Construct({'wood': 1})
 sawmill.actions = [sawmill_build]
 
 shipping_line = Building()
+shipping_line.name = "shipping line"
+shipping_line.build_cost = {'wood': 2, 'brick': 3}
+shipping_line.fees = [{'food': 2}]
+shipping_line.rank = 18
+shipping_line.value = shipping_line.price = 10
+shipping_line.type = "economic"
+shipping_line.icon = ['fisherman']
+sawmill.owner = "game"
+sawmill.usage_limit = 1
+sawmill.description = "Ship goods for 3 Energy per loaded ship."
+sawmill_get_blueprint = requestblocks.SelectBlueprint('wood')
+sawmill_get_player = requestblocks.SelectPlayer()
+sawmill.requests = [sawmill_get_blueprint, sawmill_get_player]
+sawmill_build = actionblocks.Construct({'wood': 1})
+sawmill.actions = [sawmill_build]
