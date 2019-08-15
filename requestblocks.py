@@ -1,3 +1,5 @@
+import gamefunctions
+
 class GetQuantity:
     """ Gets quantity of an 'item' type """
     item = "undefined"
@@ -152,3 +154,109 @@ class GetExchangeRequest:
             print(str(idx+1) + ". " + str(opt))
         sel = input("? ")
         return self.item, self.options[int(sel)-1], int(sel)-1
+
+
+class GetShipment:
+    """ Setup player ships with consignment and reserve fuel """
+
+    def get(self, game_state):
+        total_ships = len(game_state.ships[game_state.current_player]);
+        if total_ships == 0:
+            print("You do not have any ships.")
+            return None
+
+        print("You have " + str(total_ships) + " ship(s).")
+        for idx, ship in enumerate(game_state.ships[game_state.current_player]):
+            print(str(idx+1) + ". " + ship.type.title() + ' "' + ship.name.title() + '" [ Capacity: ' + str(ship.capacity) + "]")
+        scount = total_ships
+        fuel_check = gamefunctions.check_availability('energy', scount * 3)
+        while fuel_check == False:
+            scount -= 1
+            if scount == 0:
+                break;
+            fuel_check = gamefunctions.check_availability('energy', scount * 3)
+        if scount == 0:
+            print("You do not have any energy to fuel ship.")
+            return None
+
+        print("You can fuel " + str(scount) + " ship(s). Each ship requires 3 energy to ship goods.")
+        count = input("How many ships do you want to fuel ? (Fuels your best ships first): ")
+        while int(count) > scount:
+            count = input("You only have enough Energy to fuel " + str(scount) + " ships. Re-enter: ")
+
+        selected_ships = []
+        available_ships = game_state.ships[game_state.current_player]
+        num = 0
+        while num < int(count):
+            best_cargo = 0
+            chosen_ship = None
+            for ship in available_ships:
+                if ship.capacity > best_cargo:
+                    chosen_ship = ship
+                    best_cargo = ship.capacity
+            selected_ships.append(chosen_ship)
+            available_ships.remove(chosen_ship)
+            num += 1
+
+        energy_reqd = 0
+        num_goods = 0
+        for ship in selected_ships:
+            energy_reqd += ship.fuel['energy']
+            num_goods += ship.capacity
+        print("You need " + str(energy_reqd) + " to fuel your " + str(count) + " ship(s).")
+        gamefunctions.collect_cost('energy', energy_reqd)
+
+        print("You can now ship " + str(num_goods) + " goods.")
+
+        inv_menu = []
+        for key, value in game_state.inventory.items():
+            if value > 0 and key != 'money':
+                inv_menu.append((key,value))
+        selected = {}
+        while (True):
+            print("Select items to ship:")
+            idx = 1
+            for item, quantity in inv_menu:
+                print(str(idx) + '. ' + item.title() + ": " + str(quantity))
+                idx += 1
+            sel = input("Item number ? ")
+            if int(sel) >= idx:
+                print("Invalid input. Please select again.")
+                continue
+            num = input("You got " + str(inv_menu[int(sel)-1][1]) + ' '
+                        + inv_menu[int(sel)-1][0].title() + ". How many ? ")
+            if int(num) > inv_menu[int(sel)-1][1]:
+                print("You don't have that much.")
+                continue
+            if int(num) > num_goods:
+                print("Cannot load " + num + " " + inv_menu[int(sel)-1][0].title() + ". Available shipping capacity is " + str(num_goods) + " items.")
+                continue
+            if inv_menu[int(sel)-1][0] in selected:
+                selected[inv_menu[int(sel)-1][0]] += int(num)
+            else:
+                selected[inv_menu[int(sel) - 1][0]] = int(num)
+            stuff = inv_menu[int(sel)-1][0]
+            qty = inv_menu[int(sel)-1][1] - int(num)
+            num_goods -= int(num)
+            print(num + " " + stuff.title() + " was loaded. ", end="")
+            if num_goods > 0:
+                print("Available shipping capacity is " + str(num_goods) + " items.")
+            else:
+                print("Your ship(s) have been fully loaded.")
+            inv_menu[int(sel)-1] = (stuff, qty)
+            if inv_menu[int(sel)-1][1] <= 0:
+                del inv_menu[int(sel)-1]
+            print("Shipment: ", end="")
+            for key, value in selected.items():
+                if value > 0:
+                    print("[ " + key.title() + ": " + str(value) + " ]", end="")
+            print()
+            if len(inv_menu) <= 0:
+                break;
+            if num_goods <= 0:
+                break;
+
+        return selected_ships, selected
+
+
+

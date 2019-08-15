@@ -75,10 +75,10 @@ def collect_cost(resource_type, amount):
             idx += 1
         chosen_fees = []
         while True:
-            ans = input("Select energy to spend: ")
+            ans = input("Select item to use for energy: ")
             if int(ans) > len(energy_stuff):
                 continue
-            entry = energy_stuff[int(ans)-1];
+            entry = energy_stuff[int(ans)-1]
             num = input("How many: ")
             if int(num) <= entry[1]:
                 amount -= entry[0].energy * int(num)

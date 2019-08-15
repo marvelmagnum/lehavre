@@ -442,3 +442,51 @@ class CollectStandardItems:
                 print(item.title(), end=".")
         print()
         return True
+
+
+class DoShipping:
+    """ Ship loaded goods and receive revenue """
+
+    '''args: 0 = game state, 1 = tuple of (loaded ships, dictionary of goods and quantity), 2 = player'''
+    def do(self, args):
+        if args[1] == None:
+            return False
+
+        shipment = args[1][1]
+        shiplist = args[1][0]
+        for ship in shiplist:
+            cargo = ship.capacity
+            revenue = 0
+            shipload = {}
+            for item, qty in shipment.items():
+                if qty == 0:
+                    continue
+                amt = 0
+                if qty >= cargo:
+                    amt = cargo
+                else:
+                    amt = qty
+                shipment[item] = qty - amt
+                cargo -= amt
+                shipload[item] = amt
+                revenue += resources.resource_map[item].value * amt
+                if cargo <= 0:
+                    break
+            print(ship.type.title() + ' "' + ship.name.title() + '" ' + " delivers ", end="")
+            types = len(shipload)
+            idx = 0
+            for key, value in shipload.items():
+                if idx < types - 2:
+                    print(str(value) + ' ' + key.title(), end=", ")
+                elif idx == types - 2:
+                    print(str(value) + ' ' + key.title(), end=" and ")
+                else:
+                    print(str(value) + ' ' + key.title(), end="")
+                idx += 1
+            print(" for " + str(revenue) + " money.")
+            args[0].inventory['money'] += revenue
+        return True
+
+
+
+

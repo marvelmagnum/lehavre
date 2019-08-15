@@ -3,10 +3,10 @@ import ships
 
 class GameState:
     offers = {'money': 2, 'fish': 2, 'wood': 2, 'clay': 1, 'iron': 0, 'grain': 0, 'cattle': 0}
-    inventory = {'money': 5, 'coal': 1, 'wood': 10}
+    inventory = {'money': 5, 'coal': 1 }
     current_player = 'p1'  # current player: p1, p2, p3, ...
     location = {'p1': 'none'}  # player's location: none, building names
-    ships = [{'game':[ships.wship1,
+    ships = {'game':[ ships.wship1,
                       ships.wship2,
                       ships.wship3,
                       ships.wship4,
@@ -26,7 +26,7 @@ class GameState:
                       ships.lship1,
                       ships.lship2,
                       ships.lship3],
-                'p1':[]}]
+                'p1':[]}
 
     bases = [['money', 'wood'],
              ['wood', 'fish', 'interest'],
@@ -65,6 +65,7 @@ class GameState:
                   buildings.court,
                   buildings.market,
                   buildings.sawmill,
+                  buildings.shipping_line,
                   ]
 
 
