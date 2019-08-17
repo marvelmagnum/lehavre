@@ -476,7 +476,7 @@ shipping_line.rank = 18
 shipping_line.value = shipping_line.price = 10
 shipping_line.type = "economic"
 shipping_line.icon = ['fisherman']
-shipping_line.owner = "game"
+shipping_line.owner = "blueprint"
 shipping_line.usage_limit = 1
 shipping_line.description = "Ship goods for 3 Energy per loaded ship."
 shipping_line_get_player = requestblocks.SelectPlayer()
@@ -484,3 +484,95 @@ shipping_line_get_shipment = requestblocks.GetShipment()
 shipping_line.requests = [shipping_line_get_shipment, shipping_line_get_player]
 shipping_line_do_shipping = actionblocks.DoShipping()
 shipping_line.actions = [shipping_line_do_shipping]
+
+smokehouse = Building()
+smokehouse.name = "smokehouse"
+smokehouse.build_cost = {'wood': 2, 'clay': 3}
+smokehouse.fees = [{'food': 2}, {'money': 1}]
+smokehouse.rank = 8
+smokehouse.value = smokehouse.price = 6
+smokehouse.type = "commercial"
+smokehouse.icon = ['fisherman']
+smokehouse.owner = "blueprint"
+smokehouse.usage_limit = 1
+smokehouse.description = "Make upto 6 Smoked Fish from Fish for 1 Energy. Receive 1 Money for every 3 Fish smoked."
+smokehouse_get_quantity = requestblocks.GetQuantity('fish', 6)
+smokehouse.requests = [smokehouse_get_quantity]
+smokehouse_give_fish = actionblocks.RemoveItems('fish', 1)
+smokehouse_spend_energy = actionblocks.SpendEnergy(0, 1)
+smokehouse_get_smoked_fish = actionblocks.AddItems('smoked fish',1)
+smokehouse_get_money = actionblocks.AddItems('money',0.34)
+smokehouse.actions = [smokehouse_give_fish, smokehouse_spend_energy, smokehouse_get_smoked_fish, smokehouse_get_money]
+
+''' T '''
+tannery = Building()
+tannery.name = "tannery"
+tannery.build_cost = {'wood': 1, 'brick': 1}
+tannery.fees = []
+tannery.rank = 20
+tannery.value = tannery.price = 12
+tannery.type = "commercial"
+tannery.icon = []
+tannery.owner = "blueprint"
+tannery.usage_limit = 1
+tannery.description = "Make upto 4 Leather from Hides. Receive 1 money for every Hide tanned."
+tannery_get_quantity = requestblocks.GetQuantity('hides', 4)
+tannery.requests = [tannery_get_quantity]
+tannery_give_hides = actionblocks.RemoveItems('hides', 1)
+tannery_get_leather = actionblocks.AddItems('leather', 1)
+tannery_get_money = actionblocks.AddItems('money', 1)
+tannery.actions = [tannery_give_hides, tannery_get_leather, tannery_get_money]
+
+town_hall = Building()
+town_hall.name = "town hall"
+town_hall.build_cost = {'wood': 4, 'brick': 3}
+town_hall.fees = []
+town_hall.rank = 28
+town_hall.value = 6
+town_hall.price = 30
+town_hall.type = "public"
+town_hall.icon = []
+town_hall.owner = "blueprint"
+town_hall.usage_limit = 0
+town_hall.description = "Unusable. Endgame value. Each Public buildings add 4 value and Craftsman buildings add 2 value."
+
+''' W '''
+wharf1 = Building()
+wharf1.name = "wharf 1"
+wharf1.build_cost = {'wood': 2, 'clay': 2, 'iron': 2}
+wharf1.fees = [{'food': 2}]
+wharf1.rank = 12
+wharf1.value = wharf1.price = 14
+wharf1.type = "industrial"
+wharf1.icon1 = []
+wharf1.owner = "blueprint"
+wharf1.usage_limit = 1
+wharf1.description = "Build an available ship. "
+wharf1.non_modern_desc = "Must be modernized with a 'Brick' once to build non-wooden ships."
+wharf1.modern_desc = "Modernized. Can build all ships."
+wharf1.modernized = False
+wharf1_get_ship = requestblocks.SelectShipType()
+wharf1_get_player = requestblocks.SelectPlayer()
+wharf1.requests = [wharf1_get_ship, wharf1_get_player]
+wharf1_build_ship = actionblocks.BuildShip(wharf1)
+wharf1.actions = [wharf1_build_ship]
+
+wharf2 = Building()
+wharf2.name = "wharf 2"
+wharf2.build_cost = {'wood': 2, 'clay': 2, 'iron': 2}
+wharf2.fees = [{'food': 2}]
+wharf2.rank = 17
+wharf2.value = wharf1.price = 14
+wharf2.type = "industrial"
+wharf2.icon1 = []
+wharf2.owner = "blueprint"
+wharf2.usage_limit = 1
+wharf2.description = "Build an available ship. "
+wharf2.non_modern_desc = "Must be modernized with a 'Brick' once to build non-wooden ships."
+wharf2.modern_desc = "Modernized. Can build all ships."
+wharf2.modernized = False
+wharf2_get_ship = requestblocks.SelectShipType()
+wharf2_get_player = requestblocks.SelectPlayer()
+wharf2.requests = [wharf2_get_ship, wharf2_get_player]
+wharf2_build_ship = actionblocks.BuildShip(wharf2)
+wharf2.actions = [wharf2_build_ship]

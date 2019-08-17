@@ -56,7 +56,13 @@ def assemble_commands():
         print(str(com_count) + ": " + b.name.title(), end="")
         if b.current_user != 'none':
             print(" <Occupied by " + b.current_user.title() + ">", end="")
-        print(" - [" + b.description + "] ")
+        if 'wharf' in b.name:
+            if b.modernized is False:
+                print(" - [" + b.description + b.non_modern_desc + "] ")
+            else:
+                print(" - [" + b.description + b.modern_desc + "] ")
+        else:
+            print(" - [" + b.description + "] ")
         com_count += 1
     return com_count
 

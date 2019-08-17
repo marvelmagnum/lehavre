@@ -3,12 +3,17 @@ import gamefunctions
 class GetQuantity:
     """ Gets quantity of an 'item' type """
     item = "undefined"
+    limit = 0
 
-    def __init__(self, item):
+    def __init__(self, item, limit = 0):
         self.item = item
+        self.limit = limit
 
     def get(self, game_state):
-        return int(input("How many " + self.item.title() + ": "))
+        qty = int(input("How many " + self.item.title() + ": "))
+        while self.limit > 0 and qty > self.limit:
+            qty = int(input("Limit is " + str(self.limit) + " " + self.item.title() + ". Re-enter: "))
+        return qty
 
 
 class SelectBlueprint:
@@ -44,6 +49,23 @@ class SelectBlueprint:
                 continue
             else:
                 return game_state.blueprints[int(sel)-1]
+
+
+class SelectShipType:
+    """ Gets a ship from the available ships. """
+
+    def get(self, game_state):
+        if len(game_state.ships['game']) == 0:
+            return None
+
+        print("Select ship to build:")
+        for idx, ship in enumerate(game_state.ships['game']):
+            print(str(idx+1) + ": " + ship.name.title() + '[' + ship.type.title() + ']', end=" : ")
+            for key, value in ship.build_cost.items():
+                print(key.title() + "(" + str(value) + ")", end=" ")
+            print("Energy(3)")
+        sel = input("? ")
+        return game_state.ships['game'][int(sel) - 1]
 
 
 class SelectInventoryItems:

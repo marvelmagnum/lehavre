@@ -36,7 +36,8 @@ class AddItems:
             args[0].inventory[self.item] += int(args[1] * self.modifier)
         else:
             args[0].inventory[self.item] = int(args[1] * self.modifier)
-        print("You received " + str(int(args[1] * self.modifier)) + " " + self.item.title() + ".")
+        if int(args[1] * self.modifier) > 0:
+            print("You received " + str(int(args[1] * self.modifier)) + " " + self.item.title() + ".")
         return True
 
 
@@ -117,6 +118,50 @@ class Construct:
         return True
 
 
+class BuildShip:
+    """ Builds a ship using 'wharf' verifying modernization requirements, transfers ownership to player, deducts build cost """
+    wharf = None
+
+    def __init__(self, wharf):
+        self.wharf = wharf
+
+    '''args: 0 = game state, 1 = ship, 2 = owner'''
+    def do(self, args):
+        if args[1] is None:
+            print("No ships available to build.")
+            return False
+
+        if args[1].type != "wooden ship" and self.wharf.modernized is False:
+            print("This Wharf can only build wooden ships.")
+            if 'brick' in args[0].inventory and args[0].inventory['brick'] > 0:
+                print("Upgrade it with 1 Brick ?")
+                print("1. Yes")
+                print("2. No")
+                ans = input("? ")
+                if int(ans) == 1:
+                    args[0].inventory['brick'] -= 1
+                    self.wharf.modernized = True
+                    print("This wharf can now build all ships.")
+                else:
+                    return False
+            else:
+                return False
+
+        for key, value in args[1].build_cost.items():
+            required = value
+            if key in args[0].inventory and args[0].inventory[key] >= required:
+                args[0].inventory[key] -= required
+            else:
+                print("You don't have enough " + key.title())
+                return False
+        if gamefunctions.check_availability('energy', 3):
+            gamefunctions.collect_cost('energy', 3)
+
+        args[0].ships[args[2]].append(args[1])
+        args[0].ships['game'].remove(args[1])
+        return True
+
+
 class CollectTickets:
     """ Collect 'amount' money per each player using owned buildings """
     amount = 0
@@ -141,15 +186,20 @@ class CollectTickets:
 
 
 class SpendEnergy:
-    """ Removes chosen energy item from inventory applying the 'modifier' """
+    """ Removes chosen energy item from inventory applying the 'modifier'. if 'set_qty' is non-zero, that values is used instead """
     modifier = 0.0
+    set_qty = 0
 
-    def __init__(self,  mod):
+    def __init__(self,  mod, qty = 0):
         self.modifier = mod
+        self.set_qty = qty
 
     '''args: 0 = game_state, 1 = amt'''
     def do(self, args):
-        required = math.ceil(args[1] * self.modifier)
+        if self.set_qty > 0:
+            required = self.set_qty
+        else:
+            required = math.ceil(args[1] * self.modifier)
         if required == 0:
             return True
         print(str(required) + " Energy required.")

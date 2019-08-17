@@ -35,7 +35,7 @@ def collect_cost(resource_type, amount):
     if resource_type == 'food':
         foodstuff = []
         for key,value in gamestate.game_state.inventory.items():
-            if resources.resource_map[key].food > 0:
+            if resources.resource_map[key].food > 0 and gamestate.game_state.inventory[key] > 0:
                 foodstuff.append((resources.resource_map[key],value))
         print("You have:")
         idx = 1
@@ -65,7 +65,7 @@ def collect_cost(resource_type, amount):
     elif resource_type == 'energy':
         energy_stuff = []
         for key,value in gamestate.game_state.inventory.items():
-            if resources.resource_map[key].energy > 0:
+            if resources.resource_map[key].energy > 0 and gamestate.game_state.inventory[key] > 0:
                 energy_stuff.append((resources.resource_map[key],value))
         print("You have:")
         idx = 1
