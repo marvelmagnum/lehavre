@@ -55,7 +55,7 @@ class SelectBlueprint:
             elif int(sel) > idx - 1:
                 print ("Invalid selection.")
                 continue
-            elif not available[int(sel)-1].build_cost:
+            elif len(available[int(sel)-1].build_cost) == 0:
                 print (available[int(sel)-1].name.title() + " is an un-buildable building. May only be purchased.")
             else:
                 return available[int(sel)-1]

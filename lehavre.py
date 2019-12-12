@@ -5,6 +5,7 @@ from gamestate import GameState
 from logic import Logic
 from player import Player
 from buildings import Building
+from ships import Ship
 
 # Initial commands
 commands = {1: 'money',
@@ -25,7 +26,7 @@ def init():
     random.shuffle(game_state.bases)  # shuffle bases
 
     #print("Add Players")
-    player_count = 2 #int(input("Enter total player count (1-7): "))
+    player_count = 2 #int(input("Enter total player count (1-5): "))
     ai_count = 1 #int(input("Enter AI player count: "))
     # for i in range(0, player_count - ai_count):
     #     pname = input("P" + str(i+1) + " name: ")
@@ -33,7 +34,7 @@ def init():
     #for i in range(0, ai_count):
     game_state.players.append((Player.create_player("ai")))
     Building.setup_offers(game_state)
-
+    Ship.setup_rounds(game_state)
 
 def update_offers(turn, pid):
     """ Shows turn values, player, sets bases and updates offers """

@@ -13,6 +13,19 @@ class Ship:
     players = { 0 : [0, 0, "none"]} # harvest round map: player count mapped to [sort order, feeding requirement, town development (none/standard/special)]
     description = "blah blah blah"
 
+    @staticmethod
+    def setup_rounds(game_state):
+        # Find available ships/harvest rounds
+        pl_count = len(game_state.players)
+        for ship in game_state.ship_designs:
+            if pl_count in ship.players:
+                game_state.harvest.append(ship)
+
+        # Sort the stack by round sort order
+        game_state.harvest.sort(key=lambda x: x.players[pl_count][0])
+
+
+
 ''' Wooden Ships '''
 wship1 = Ship()
 wship1.name = "appoline"

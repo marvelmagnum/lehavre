@@ -9,7 +9,7 @@ class GameState:
     # location = {'p1': 'none'}  # player's location: none, building names
     players = [] # list of players in the current game
 
-    ships = {'game':[ ships.wship1,
+    ship_designs = [  ships.wship1,
                       ships.wship2,
                       ships.wship3,
                       ships.wship4,
@@ -28,8 +28,7 @@ class GameState:
                       ships.sship4,
                       ships.lship1,
                       ships.lship2,
-                      ships.lship3],
-                'p1':[]}
+                      ships.lship3]
 
     bases = [['money', 'wood'],
              ['wood', 'fish', 'interest'],
@@ -45,6 +44,8 @@ class GameState:
 
 
     stacks = [[],[],[]] # 3 stacks of available building cards during the game
+    harvest = [] # harvest round stack according to number of players
+    ships = { 'game' : [] } # available ships during the game. belonging to game and players.
 
     blueprints = [buildings.abattoir,
                   buildings.arts_center,
