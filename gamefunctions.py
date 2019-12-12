@@ -132,6 +132,6 @@ def occupy_building(building):
     building_name = gamestate.game_state.current_player.location
     for b in gamestate.game_state.constructed:
         if b.name == building_name:
-            b.current_user = 0
+            b.current_user = 'none'
     building.current_user = gamestate.game_state.current_player
     gamestate.game_state.current_player.location = building.name

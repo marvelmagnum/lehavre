@@ -5,7 +5,7 @@ import player
 class GameState:
     offers = {'money': 2, 'fish': 2, 'wood': 2, 'clay': 1, 'iron': 0, 'grain': 0, 'cattle': 0}
     # inventory = {'money': 5, 'coal': 1 }
-    current_player = 0  # current player: p1, p2, p3, ...
+    current_player = 'none'  # current player: p1, p2, p3, ...
     # location = {'p1': 'none'}  # player's location: none, building names
     players = [] # list of players in the current game
 
@@ -44,11 +44,12 @@ class GameState:
                    buildings.construction_firm]
 
 
+    stacks = [[],[],[]] # 3 stacks of available building cards during the game
+
     blueprints = [buildings.abattoir,
                   buildings.arts_center,
                   buildings.bakehouse,
                   buildings.bank,
-                  buildings.bakehouse,
                   buildings.black_market,
                   buildings.brick_works,
                   buildings.bridge_over_seine,
@@ -73,6 +74,3 @@ class GameState:
                   buildings.town_hall,
                   buildings.wharf1,
                   buildings.wharf2]
-
-
-game_state = GameState()

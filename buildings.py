@@ -1,3 +1,4 @@
+import random
 import requestblocks
 import actionblocks
 
@@ -13,8 +14,9 @@ class Building:
     type = "none" # types: none, craftsman, economic, industrial, public
     icon = ['none'] # icons: none, hammer, fisherman
     owner = "undefined" # owners: blueprint, game, p1, p2, ...
-    current_user = 0  #users: 0, Player objects [p1(), p2(), ...]
-    usage_limit = 0 #how many times building can use used. unusable building are 0
+    current_user = 'none'  # users: 'none', Player objects [p1(), p2(), ...]
+    usage_limit = 0 # how many times building can use used. unusable building are 0
+    player_count = [0] # player counts valid for this building: [1,3], [3,4,5],...
     description = "blah blah blah"
 
     ''' 
@@ -40,6 +42,29 @@ class Building:
                 return False         # action failed. any action failure usually means the building use failed
         return True           # building used normally
 
+    @staticmethod
+    def setup_offers(game_state):
+        # Find available blueprints
+        available = []
+        pl_count = len(game_state.players)
+        for building in game_state.blueprints:
+            if pl_count in building.player_count:
+                available.append(building)
+        stack_size = len(available) / 3
+        random.shuffle(available)
+        # Split into 3 stacks
+        idx = 0
+        while len(available) > 0:
+            game_state.stacks[idx].append(available.pop())
+            if idx == 2:
+                idx = 0
+            else:
+                idx += 1
+        # Sort the stacks by rank
+        for i in range(0,3):
+            game_state.stacks[i].sort(key=lambda x: x.rank)
+
+            
 
 ''' A '''
 abattoir = Building()
@@ -52,6 +77,7 @@ abattoir.type = "craftsman"
 abattoir.icon = ['none']
 abattoir.owner = "blueprint"
 abattoir.usage_limit = 1
+abattoir.player_count = [1,2]
 abattoir.description = "Slaughter Cattle for Meat. Also receive 1 Hides for every 2 Cattle slaughtered."
 abatr_get_quantity = requestblocks.GetQuantity('cattle')
 abattoir.requests = [abatr_get_quantity]
@@ -70,6 +96,7 @@ arts_center.type = "craftsman"
 arts_center.icon = ['fisherman']
 arts_center.owner = "blueprint"
 arts_center.usage_limit = 1
+arts_center.player_count = [1,2]
 arts_center.description = "Receive 4 Money for each player using your buildings."
 artct_get_player = requestblocks.SelectPlayer()
 arts_center.requests = [artct_get_player]
@@ -87,6 +114,7 @@ bakehouse.type = "craftsman"
 bakehouse.icon = ['none']
 bakehouse.owner = "blueprint"
 bakehouse.usage_limit = 1
+bakehouse.player_count = [1,2]
 bakehouse.description = "Bake Bread with Grain. Spend 1 Energy and receive 1 Money for every 2 Bread baked."
 bakeh_get_quantity = requestblocks.GetQuantity('grain')
 bakehouse.requests = [bakeh_get_quantity]
@@ -106,6 +134,7 @@ black_market.type = "none"
 black_market.icon = ['none']
 black_market.owner = "blueprint"
 black_market.usage_limit = 1
+black_market.player_count = [1,2]
 black_market.description = "Un-buildable. Collect 2 of each item whose offer space is empty."
 blkmkt_get_empty_offers = requestblocks.GetEmptyOffers()
 black_market.requests = [blkmkt_get_empty_offers]
