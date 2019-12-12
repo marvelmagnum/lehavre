@@ -1,11 +1,14 @@
 import buildings
 import ships
+import player
 
 class GameState:
     offers = {'money': 2, 'fish': 2, 'wood': 2, 'clay': 1, 'iron': 0, 'grain': 0, 'cattle': 0}
-    inventory = {'money': 5, 'coal': 1 }
-    current_player = 'p1'  # current player: p1, p2, p3, ...
-    location = {'p1': 'none'}  # player's location: none, building names
+    # inventory = {'money': 5, 'coal': 1 }
+    current_player = 0  # current player: p1, p2, p3, ...
+    # location = {'p1': 'none'}  # player's location: none, building names
+    players = [] # list of players in the current game
+
     ships = {'game':[ ships.wship1,
                       ships.wship2,
                       ships.wship3,

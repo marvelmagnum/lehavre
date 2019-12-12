@@ -13,7 +13,7 @@ class Building:
     type = "none" # types: none, craftsman, economic, industrial, public
     icon = ['none'] # icons: none, hammer, fisherman
     owner = "undefined" # owners: blueprint, game, p1, p2, ...
-    current_user = "none"  #users: none, p1, p2, ...
+    current_user = 0  #users: 0, Player objects [p1(), p2(), ...]
     usage_limit = 0 #how many times building can use used. unusable building are 0
     description = "blah blah blah"
 

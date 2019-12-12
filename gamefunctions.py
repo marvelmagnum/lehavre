@@ -34,8 +34,8 @@ def collect_cost(resource_type, amount):
     """ Collect food/money from player as fees """
     if resource_type == 'food':
         foodstuff = []
-        for key,value in gamestate.game_state.inventory.items():
-            if resources.resource_map[key].food > 0 and gamestate.game_state.inventory[key] > 0:
+        for key,value in gamestate.game_state.current_player.inventory.items():
+            if resources.resource_map[key].food > 0 and gamestate.game_state.current_player.inventory[key] > 0:
                 foodstuff.append((resources.resource_map[key],value))
         print("You have:")
         idx = 1
@@ -54,7 +54,7 @@ def collect_cost(resource_type, amount):
                 amount -= entry[0].food * int(num)
                 print("You have paid " + str(entry[0].food * int(num)) + ' ' + entry[0].name.title() + '. ', end=" ")
                 chosen_fees.append((entry[0].name, int(num)))
-                gamestate.game_state.inventory[entry[0].name] -= int(num)
+                gamestate.game_state.current_player.inventory[entry[0].name] -= int(num)
                 if amount <= 0:
                     print()
                     return chosen_fees
@@ -64,8 +64,8 @@ def collect_cost(resource_type, amount):
                 print("You don't have " + num + ' ' + entry[0].name.title())
     elif resource_type == 'energy':
         energy_stuff = []
-        for key,value in gamestate.game_state.inventory.items():
-            if resources.resource_map[key].energy > 0 and gamestate.game_state.inventory[key] > 0:
+        for key,value in gamestate.game_state.current_player.inventory.items():
+            if resources.resource_map[key].energy > 0 and gamestate.game_state.current_player.inventory[key] > 0:
                 energy_stuff.append((resources.resource_map[key],value))
         print("You have:")
         idx = 1
@@ -84,7 +84,7 @@ def collect_cost(resource_type, amount):
                 amount -= entry[0].energy * int(num)
                 print("You have spent " + str(int(num)) + ' ' + entry[0].name.title() + '. ', end=" ")
                 chosen_fees.append((entry[0].name, int(num)))
-                gamestate.game_state.inventory[entry[0].name] -= int(num)
+                gamestate.game_state.current_player.inventory[entry[0].name] -= int(num)
                 if amount <= 0:
                     print()
                     return chosen_fees
@@ -94,13 +94,13 @@ def collect_cost(resource_type, amount):
                 print("You don't have " + num + ' ' + entry[0].name.title())
     elif resource_type == 'money':
         chosen_fees = []
-        print("You have " + str(gamestate.game_state.inventory['money']) + " money. Pay " + str(amount) + " ?")
+        print("You have " + str(gamestate.game_state.current_player.inventory['money']) + " money. Pay " + str(amount) + " ?")
         print("1. Yes")
         print("2. No")
         ans = input("? ")
         if int(ans) == 1:
             chosen_fees.append(('money', amount))
-            gamestate.game_state.inventory['money'] -= amount
+            gamestate.game_state.current_player.inventory['money'] -= amount
             return chosen_fees
         else:
             return None
@@ -109,19 +109,19 @@ def collect_cost(resource_type, amount):
 def check_availability(resource_type, amount):
     """ Check if the required fees are available with the player """
     if resource_type == 'food':
-        for key,value in gamestate.game_state.inventory.items():
+        for key,value in gamestate.game_state.current_player.inventory.items():
             amount -= resources.resource_map[key].food * value
             if amount <= 0:
                 return True
         return False
     elif resource_type == 'energy':
-        for key, value in gamestate.game_state.inventory.items():
+        for key, value in gamestate.game_state.current_player.inventory.items():
             amount -= resources.resource_map[key].energy * value
             if amount <= 0:
                 return True
         return False
     elif resource_type == 'money':
-        if gamestate.game_state.inventory['money'] >= amount:
+        if gamestate.game_state.current_player.inventory['money'] >= amount:
             return True
         else:
             return False
@@ -129,9 +129,9 @@ def check_availability(resource_type, amount):
 
 def occupy_building(building):
     """ current player occupied building. free building occupied by player previously """
-    building_name = gamestate.game_state.location[gamestate.game_state.current_player]
+    building_name = gamestate.game_state.current_player.location
     for b in gamestate.game_state.constructed:
         if b.name == building_name:
-            b.current_user = 'none'
+            b.current_user = 0
     building.current_user = gamestate.game_state.current_player
-    gamestate.game_state.location[gamestate.game_state.current_player] = building.name
+    gamestate.game_state.current_player.location = building.name

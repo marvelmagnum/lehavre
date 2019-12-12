@@ -13,8 +13,8 @@ class RemoveItems:
 
     '''args: 0 = game_state, 1 = amt'''
     def do(self, args):
-        if self.item in args[0].inventory and args[0].inventory[self.item] >= args[1]:
-            args[0].inventory[self.item] -= args[1] * self.modifier
+        if self.item in args[0].current_player.inventory and args[0].current_player.inventory[self.item] >= args[1]:
+            args[0].current_player.inventory[self.item] -= args[1] * self.modifier
             return True
         else:
             print("You don't have " + str(args[1]) + ' ' + self.item.title())
@@ -32,10 +32,10 @@ class AddItems:
 
     '''args: 0 = game_state, 1 = amt'''
     def do(self, args):
-        if self.item in args[0].inventory:
-            args[0].inventory[self.item] += int(args[1] * self.modifier)
+        if self.item in args[0].current_player.inventory:
+            args[0].current_player.inventory[self.item] += int(args[1] * self.modifier)
         else:
-            args[0].inventory[self.item] = int(args[1] * self.modifier)
+            args[0].current_player.inventory[self.item] = int(args[1] * self.modifier)
         if int(args[1] * self.modifier) > 0:
             print("You received " + str(int(args[1] * self.modifier)) + " " + self.item.title() + ".")
         return True
@@ -59,10 +59,10 @@ class ReceiveItems:
 
     '''args: 0 = game_state, 1 = player'''
     def do(self, args):
-        if self.item in args[0].inventory:
-            args[0].inventory[self.item] += self.quantity
+        if self.item in args[0].current_player.inventory:
+            args[0].current_player.inventory[self.item] += self.quantity
         else:
-            args[0].inventory[self.item] = self.quantity
+            args[0].current_player.inventory[self.item] = self.quantity
         print("You received " + str(self.quantity) + " " + self.item.title(), end="")
         if self.icon != 'none':
             count = 0
@@ -76,7 +76,7 @@ class ReceiveItems:
             if 0 < self.limit < total:
                 total = self.limit
             if total > 0:
-                args[0].inventory[self.item] += total
+                args[0].current_player.inventory[self.item] += total
                 print(" and an additional " + str(total) + " " + self.item.title() + " for your " + self.icon.title() + " buildings", end="")
         print(".")
         return True
@@ -103,8 +103,8 @@ class Construct:
                 if key == discount_key:
                     required = value - discount_value
                     break
-            if key in args[0].inventory and args[0].inventory[key] >= required:
-                args[0].inventory[key] -= required
+            if key in args[0].current_player.inventory and args[0].current_player.inventory[key] >= required:
+                args[0].current_player.inventory[key] -= required
             else:
                 print("You don't have enough " + key.title())
                 return False
@@ -133,13 +133,13 @@ class BuildShip:
 
         if args[1].type != "wooden ship" and self.wharf.modernized is False:
             print("This Wharf can only build wooden ships.")
-            if 'brick' in args[0].inventory and args[0].inventory['brick'] > 0:
+            if 'brick' in args[0].current_player.inventory and args[0].current_player.inventory['brick'] > 0:
                 print("Upgrade it with 1 Brick ?")
                 print("1. Yes")
                 print("2. No")
                 ans = input("? ")
                 if int(ans) == 1:
-                    args[0].inventory['brick'] -= 1
+                    args[0].current_player.inventory['brick'] -= 1
                     self.wharf.modernized = True
                     print("This wharf can now build all ships.")
                 else:
@@ -149,8 +149,8 @@ class BuildShip:
 
         for key, value in args[1].build_cost.items():
             required = value
-            if key in args[0].inventory and args[0].inventory[key] >= required:
-                args[0].inventory[key] -= required
+            if key in args[0].current_player.inventory and args[0].current_player.inventory[key] >= required:
+                args[0].current_player.inventory[key] -= required
             else:
                 print("You don't have enough " + key.title())
                 return False
@@ -177,7 +177,7 @@ class CollectTickets:
                 if building.current_user != 'none' and building.current_user != args[1]:
                     visitors += 1
         if visitors > 0:
-            args[0].inventory['money'] += visitors * self.amount
+            args[0].current_player.inventory['money'] += visitors * self.amount
             print("You have " + str(visitors) + " visitors. Received " + str(visitors * self.amount) + " money.")
             return True
         else:
@@ -225,10 +225,10 @@ class CollectEmptyOffers:
             return False
         print("You received ", end="")
         for idx, offer in enumerate(args[1]):
-            if offer in args[0].inventory:
-                args[0].inventory[offer] += self.quantity
+            if offer in args[0].current_player.inventory:
+                args[0].current_player.inventory[offer] += self.quantity
             else:
-                args[0].inventory[offer] = self.quantity
+                args[0].current_player.inventory[offer] = self.quantity
             if len(args[1]) > 1 and idx < len(args[1])-2:
                 print(offer.title(), end=', ')
             else:
@@ -267,7 +267,7 @@ class SellItems:
             if resources.resource_map[key].category == 'upgraded':
                 upg_count += value
                 upg_items.append(key)
-            args[0].inventory[key] -= value
+            args[0].current_player.inventory[key] -= value
         if std_count > 0:
             print("Sold " + str(std_count) + " standard items (", end="")
             for idx, sitem in enumerate(std_items):
@@ -286,7 +286,7 @@ class SellItems:
             print("). Value = " + str(math.floor(upg_count / self.upgraded_rate)) + " Money")
         total = math.floor(std_count / self.standard_rate) + math.floor(upg_count / self.upgraded_rate)
         print("Received a total of " + str(total) + " Money")
-        args[0].inventory['money'] += total
+        args[0].current_player.inventory['money'] += total
         return True
 
 # TODO:: Fix a bug where a usage fees will be refunded if there are more than 1 TradeItem actions and any one of them fails.
@@ -317,7 +317,7 @@ class TradeItems:
         for item_tuple in self.offer_package:
             required_items[item_tuple[0]] = trade_amount * item_tuple[1]
         inv_menu = []
-        for ikey, ivalue in args[0].inventory.items():
+        for ikey, ivalue in args[0].current_player.inventory.items():
             if ivalue > 0 and ikey != 'money':
                 inv_menu.append((ikey, ivalue))
         for key, value in required_items.items():
@@ -375,14 +375,14 @@ class TradeItems:
                         else:
                             return False
                     idx += 1
-        money = args[0].inventory['money']
-        args[0].inventory = {'money' : money}
+        money = args[0].current_player.inventory['money']
+        args[0].current_player.inventory = {'money' : money}
         for item, qty in inv_menu:
-            args[0].inventory[item] = qty
-        if trade_item in args[0].inventory:
-            args[0].inventory[trade_item] += trade_amount
+            args[0].current_player.inventory[item] = qty
+        if trade_item in args[0].current_player.inventory:
+            args[0].current_player.inventory[trade_item] += trade_amount
         else:
-            args[0].inventory[trade_item] = trade_amount
+            args[0].current_player.inventory[trade_item] = trade_amount
         print("You received " + str(trade_amount) + " " + trade_item.title() + " through trading.")
         return True
 
@@ -397,8 +397,8 @@ class CheckResources:
     '''args: 0 = game_state'''
     def do(self, args):
         for key, value in self.resources.items():
-            if key in args[0].inventory:
-                if args[0].inventory[key] < value:
+            if key in args[0].current_player.inventory:
+                if args[0].current_player.inventory[key] < value:
                     print("You don't have enough " + key.title())
                     return False
             else:
@@ -419,14 +419,14 @@ class ExchangeItem:
     ''' args: 0 = game state, 1 = tuple (item, amt of item, index of option selected) in GetExchange request'''
     def do(self, args):
         item_tuple = args[1]
-        if args[0].inventory[item_tuple[0]] < item_tuple[1]:
+        if args[0].current_player.inventory[item_tuple[0]] < item_tuple[1]:
             print("You don't have enough " + item_tuple[0].title() + ".")
             return False
-        args[0].inventory[item_tuple[0]] -= item_tuple[1]
-        if self.item in args[0].inventory:
+        args[0].current_player.inventory[item_tuple[0]] -= item_tuple[1]
+        if self.item in args[0].current_player.inventory:
             args[0].inventory[self.item] += self.options[item_tuple[2]]
         else:
-            args[0].inventory[self.item] = self.options[item_tuple[2]]
+            args[0].current_player.inventory[self.item] = self.options[item_tuple[2]]
         print("You received " + str(self.options[item_tuple[2]]) + " " + self.item.title() + ".")
         return True
 
@@ -436,18 +436,18 @@ class CloseLoans:
 
     ''' args: 0 = game state '''
     def do(self, args):
-        if not 'loan' in args[0].inventory or args[0].inventory['loan'] == 0:
+        if not 'loan' in args[0].current_player.inventory or args[0].current_player.inventory['loan'] == 0:
             print("You don't have any Loan.")
             return False
-        elif args[0].inventory['loan'] == 1:
-            args[0].inventory['loan'] = 0
+        elif args[0].current_player.inventory['loan'] == 1:
+            args[0].current_player.inventory['loan'] = 0
             print("You closed 1 Loan.")
-        elif args[0].inventory['loan'] == 2:
-            args[0].inventory['loan'] -= 1
-            args[0].inventory['money'] += 2
+        elif args[0].current_player.inventory['loan'] == 2:
+            args[0].current_player.inventory['loan'] -= 1
+            args[0].current_player.inventory['money'] += 2
             print("You closed 1 Loan and received 2 Money.")
         else:
-            args[0].inventory['loan'] -= 2
+            args[0].current_player.inventory['loan'] -= 2
             print("You closed 2 Loans.")
         return True
 
@@ -480,10 +480,10 @@ class CollectStandardItems:
             selected.append(choices.pop(int(sel)-1))
         print ("You received ", end="")
         for idx, item in enumerate(selected):
-            if item in args[0].inventory:
-                args[0].inventory[item] += 1
+            if item in args[0].current_player.inventory:
+                args[0].current_player.inventory[item] += 1
             else:
-                args[0].inventory[item] = 1
+                args[0].current_player.inventory[item] = 1
             if idx < len(selected) - 2:
                 print(item.title(), end=", ")
             elif idx == len(selected) - 2:
@@ -534,7 +534,7 @@ class DoShipping:
                     print(str(value) + ' ' + key.title(), end="")
                 idx += 1
             print(" for " + str(revenue) + " money.")
-            args[0].inventory['money'] += revenue
+            args[0].current_player.inventory['money'] += revenue
         return True
 
 

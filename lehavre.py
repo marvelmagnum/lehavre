@@ -2,6 +2,7 @@ import random
 import os
 import gamefunctions
 import gamestate
+from player import Player
 
 # Initial commands
 commands = {1: 'money',
@@ -21,9 +22,20 @@ def init():
     print("====================")
     random.shuffle(gamestate.game_state.bases)  # shuffle bases
 
+    #print("Add Players")
+    player_count = 2 #int(input("Enter total player count (1-7): "))
+    ai_count = 1 #int(input("Enter AI player count: "))
+    # for i in range(0, player_count - ai_count):
+    #     pname = input("P" + str(i+1) + " name: ")
+    gamestate.game_state.players.append(Player.createPlayer("Marvel"))
+    #for i in range(0, ai_count):
+    gamestate.game_state.players.append((Player.createPlayer("ai")))
 
-def update_offers(turn):
-    """ Adds turn, sets bases and updates offers """
+
+def update_offers(turn, pid):
+    """ Shows turn values, player, sets bases and updates offers """
+    gamestate.game_state.current_player = gamestate.game_state.players[pid];
+    print("Current Player: " + gamestate.game_state.current_player.name)
     print("Turn " + str(turn) + ": " + str(gamestate.game_state.bases[turn - 1]))
     gamestate.game_state.offers[gamestate.game_state.bases[turn - 1][0]] += 1
     gamestate.game_state.offers[gamestate.game_state.bases[turn - 1][1]] += 1
@@ -39,7 +51,7 @@ def update_offers(turn):
 def show_inventory():
     """ Shows the player inventory """
     print("INVENTORY", end=": ")
-    for key, value in gamestate.game_state.inventory.items():
+    for key, value in gamestate.game_state.current_player.inventory.items():
         if value > 0:
             print("[ " + key.title() + ": " + str(value) + " ]", end="")
     print()
@@ -54,8 +66,8 @@ def assemble_commands():
     com_count = 8
     for b in gamestate.game_state.constructed:          # available usable buildings
         print(str(com_count) + ": " + b.name.title(), end="")
-        if b.current_user != 'none':
-            print(" <Occupied by " + b.current_user.title() + ">", end="")
+        if b.current_user != 0:
+            print(" <Occupied by " + b.current_user.name + ">", end="")
         if 'wharf' in b.name:
             if b.modernized is False:
                 print(" - [" + b.description + b.non_modern_desc + "] ")
@@ -70,19 +82,19 @@ def assemble_commands():
 def process_command(com, count):
     """ Process command inputs """
     if 1 <= com <= 7:       # resource offers
-        if commands[com] in gamestate.game_state.inventory:
-            gamestate.game_state.inventory[commands[com]] += gamestate.game_state.offers[commands[com]]
+        if commands[com] in gamestate.game_state.current_player.inventory:
+            gamestate.game_state.current_player.inventory[commands[com]] += gamestate.game_state.offers[commands[com]]
         else:
-            gamestate.game_state.inventory[commands[com]] = gamestate.game_state.offers[commands[com]]
+            gamestate.game_state.current_player.inventory[commands[com]] = gamestate.game_state.offers[commands[com]]
         gamestate.game_state.offers[commands[com]] = 0
     elif com < count:   # usable buildings
         if gamestate.game_state.constructed[com - 8].usage_limit == 0:
             print(gamestate.game_state.constructed[com - 8].name.title() + " is not usable.")
-            return
+            return False
 
-        if gamestate.game_state.constructed[com - 8].current_user != 'none':
+        if gamestate.game_state.constructed[com - 8].current_user != 0:
             print(gamestate.game_state.constructed[com - 8].name.title() + " is already occupied.")
-            return
+            return False
 
         fees_paid = gamefunctions.get_entry_cost(gamestate.game_state.constructed[com - 8])     # collect entry fees
         if fees_paid or not gamestate.game_state.constructed[com - 8].fees:
@@ -101,19 +113,24 @@ def process_command(com, count):
                             break
                 else:   # use of building failed
                     print(gamestate.game_state.constructed[com - 8].name.title() + " could not be used.")
+                    successful = False
                     break
             if use == 0 and fees_paid:  # refund fees if building could not be used
                 for item in fees_paid:
-                    gamestate.game_state.inventory[item[0]] += item[1]
-
+                    gamestate.game_state.current_player.inventory[item[0]] += item[1]
+            if use == 0:
+                return False
+            else:
+                return True
 
 
 def run_game():
     init()
     rounds = 1
     turns = 1
+    pid = 0
     while True:
-        update_offers(turns)
+        update_offers(turns, pid)
         show_inventory()
         command_count = assemble_commands()
 
@@ -121,13 +138,17 @@ def run_game():
         if command.lower() == "quit":
             break
         com = int(command)
-        process_command(com, command_count)
+        if process_command(com, command_count) == True:
+            if turns == 7:
+                turns = 1
+                print("Round " + str(rounds) + " ends.")
+            else:
+                turns += 1
 
-        if turns == 7:
-            turns = 1
-            print("Round " + str(rounds) + " ends.")
-        else:
-            turns += 1
+            if pid >= len(gamestate.game_state.players) - 1:
+                pid = 0
+            else:
+                pid += 1
 
 
 run_game()
