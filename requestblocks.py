@@ -32,8 +32,13 @@ class SelectBlueprint:
             print(" (must require " + self.reqd_item.title() + "):")
         else:
             print(":")
+
+        available = []
+        for i in range(0,3):
+            available.append(game_state.stacks[i][0])
+
         idx = 1
-        for blueprint in game_state.blueprints:
+        for blueprint in available:
             print(str(idx) + ": " + blueprint.name.title(), end=" [ ")
             if len(blueprint.build_cost) == 0:
                 print("N/A ]")
@@ -44,11 +49,16 @@ class SelectBlueprint:
             idx += 1
         while (True):
             sel = input("? ")
-            if self.reqd_item != 'undefined' and self.reqd_item not in game_state.blueprints[int(sel)-1].build_cost.keys():
-                print ("Building must require " + self.reqd_item.title() + " to construct. Select again.");
+            if self.reqd_item != 'undefined' and self.reqd_item not in available[int(sel)-1].build_cost.keys():
+                print ("Building must require " + self.reqd_item.title() + " to construct. Select again.")
                 continue
+            elif int(sel) > idx - 1:
+                print ("Invalid selection.")
+                continue
+            elif not available[int(sel)-1].build_cost:
+                print (available[int(sel)-1].name.title() + " is an un-buildable building. May only be purchased.")
             else:
-                return game_state.blueprints[int(sel)-1]
+                return available[int(sel)-1]
 
 
 class SelectShipType:
