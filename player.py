@@ -10,9 +10,17 @@ class Player:
         self.location = 'none'
         self.type = type
 
+
     @staticmethod
     def create_player(name):
         if name.lower() == "ai":
             return Player(name.upper(), 'computer')
         else:
             return Player(name.title(), 'human')
+
+
+    def take_harvest(self):
+        if self.inventory['grain'] >= 1:
+            self.inventory['grain'] += 1
+        if self.inventory['cattle'] >= 2:
+            self.inventory['cattle'] += 1

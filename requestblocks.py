@@ -35,7 +35,8 @@ class SelectBlueprint:
 
         available = []
         for i in range(0,3):
-            available.append(game_state.stacks[i][0])
+            if game_state.stacks[i]:
+                available.append(game_state.stacks[i][0])
 
         idx = 1
         for blueprint in available:

@@ -16,7 +16,7 @@ class Building:
     owner = "undefined" # owners: blueprint, game, p1, p2, ...
     current_user = "none"   # users: 'none', Player objects [p1(), p2(), ...]
     usage_limit = 0 #how many times building can use used. unusable building are 0
-    players = { 0 : False } # player map: player count mapped to starting building state
+    player_count = {0 : False} # player map: player count mapped to starting building state
     description = "blah blah blah"
 
 
@@ -51,9 +51,19 @@ class Building:
         for building in game_state.blueprints:
             if pl_count in building.player_count:
                 available.append(building)
+
+        # Find starting buildings
+        start_buildings = []
+        for building in available:
+            if building.player_count[pl_count] == True:
+                start_buildings.append(building)
+        for building in start_buildings:
+            game_state.constructed.append(building)
+            available.remove(building)
+
+        # Split remaining into 3 blueprint offer stacks
         stack_size = len(available) / 3
         random.shuffle(available)
-        # Split into 3 stacks
         idx = 0
         while len(available) > 0:
             game_state.stacks[idx].append(available.pop())
@@ -65,7 +75,6 @@ class Building:
         for i in range(0,3):
             game_state.stacks[i].sort(key=lambda x: x.rank)
 
-            
 
 ''' A '''
 abattoir = Building()
@@ -78,11 +87,11 @@ abattoir.type = "craftsman"
 abattoir.icon = ['none']
 abattoir.owner = "blueprint"
 abattoir.usage_limit = 1
-abattoir.players = { 1 : False,
-                     2 : False,
-                     3 : False,
-                     4 : False,
-                     5 : False }
+abattoir.player_count = {1 : False,
+                         2 : False,
+                         3 : False,
+                         4 : False,
+                         5 : False}
 abattoir.description = "Slaughter Cattle for Meat. Also receive 1 Hides for every 2 Cattle slaughtered."
 abatr_get_quantity = requestblocks.GetQuantity('cattle')
 abattoir.requests = [abatr_get_quantity]
@@ -101,8 +110,8 @@ arts_center.type = "craftsman"
 arts_center.icon = ['fisherman']
 arts_center.owner = "blueprint"
 arts_center.usage_limit = 1
-arts_center.players = { 4 : False,
-                        5 : False }
+arts_center.player_count = {4 : False,
+                            5 : False}
 arts_center.description = "Receive 4 Money for each player using your buildings."
 artct_get_player = requestblocks.SelectPlayer()
 arts_center.requests = [artct_get_player]
@@ -120,11 +129,11 @@ bakehouse.type = "craftsman"
 bakehouse.icon = ['none']
 bakehouse.owner = "blueprint"
 bakehouse.usage_limit = 1
-bakehouse.players = { 1 : False,
-                      2 : False,
-                      3 : False,
-                      4 : False,
-                      5 : False }
+bakehouse.player_count = {1 : False,
+                          2 : False,
+                          3 : False,
+                          4 : False,
+                          5 : False}
 bakehouse.description = "Bake Bread with Grain. Spend 1 Energy and receive 1 Money for every 2 Bread baked."
 bakeh_get_quantity = requestblocks.GetQuantity('grain')
 bakehouse.requests = [bakeh_get_quantity]
@@ -144,9 +153,9 @@ black_market.type = "none"
 black_market.icon = ['none']
 black_market.owner = "blueprint"
 black_market.usage_limit = 1
-black_market.players = { 3 : False,
-                         4 : False,
-                         5 : False }
+black_market.player_count = {3 : False,
+                             4 : False,
+                             5 : False}
 black_market.description = "Un-buildable. Collect 2 of each item whose offer space is empty."
 blkmkt_get_empty_offers = requestblocks.GetEmptyOffers()
 black_market.requests = [blkmkt_get_empty_offers]
@@ -164,10 +173,10 @@ bank.type = "economic"
 bank.icon = ['none']
 bank.owner = "blueprint"
 bank.usage_limit = 0
-bank.players = { 2 : False,
-                 3 : False,
-                 4 : False,
-                 5 : False }
+bank.player_count = {2 : False,
+                     3 : False,
+                     4 : False,
+                     5 : False}
 bank.description = "Unusable. Endgame value. Industrial buildings add 3 value each. Economic buildings add 2 each."
 
 brick_works = Building()
@@ -180,11 +189,11 @@ brick_works.type = "industrial"
 brick_works.icon = ['none']
 brick_works.owner = "blueprint"
 brick_works.usage_limit = 1
-brick_works.players = { 1 : False,
-                        2 : False,
-                        3 : False,
-                        4 : False,
-                        5 : False }
+brick_works.player_count = {1 : False,
+                            2 : False,
+                            3 : False,
+                            4 : False,
+                            5 : False}
 brick_works.description = "Make Bricks from Clay. Spend 1 Energy and receive 1 Money for every 2 Bricks made."
 brkwrks_get_quantity = requestblocks.GetQuantity('clay')
 brick_works.requests = [brkwrks_get_quantity]
@@ -204,9 +213,9 @@ bridge_over_seine.type = "none"
 bridge_over_seine.icon = ['none']
 bridge_over_seine.owner = "blueprint"
 bridge_over_seine.usage_limit = 1
-bridge_over_seine.players = { 3 : False,
-                              4 : False,
-                              5 : False }
+bridge_over_seine.player_count = {3 : False,
+                                  4 : False,
+                                  5 : False}
 bridge_over_seine.description = "Sell goods for money. Receive 1 Money for each upgraded item or 3 standard items."
 bridge_select_items = requestblocks.SelectInventoryItems()
 bridge_over_seine.requests = [bridge_select_items]
@@ -223,11 +232,11 @@ building_firm_a.type = "craftsman"
 building_firm_a.icon = ['hammer']
 building_firm_a.owner = "game"
 building_firm_a.usage_limit = 1
-building_firm_a.players = { 1 : True,
-                            2 : True,
-                            3 : True,
-                            4 : True,
-                            5 : True }
+building_firm_a.player_count = {1 : True,
+                                2 : True,
+                                3 : True,
+                                4 : True,
+                                5 : True}
 building_firm_a.description = "Build 1 building from the available blueprints."
 bfirma_get_blueprint = requestblocks.SelectBlueprint()
 bfirma_get_player = requestblocks.SelectPlayer()
@@ -245,11 +254,11 @@ building_firm_b.type = "craftsman"
 building_firm_b.icon = ['hammer']
 building_firm_b.owner = "game"
 building_firm_b.usage_limit = 1
-building_firm_b.players = { 1 : True,
-                            2 : True,
-                            3 : True,
-                            4 : True,
-                            5 : True }
+building_firm_b.player_count = {1 : True,
+                                2 : True,
+                                3 : True,
+                                4 : True,
+                                5 : True}
 building_firm_b.description = "Build 1 building from the available blueprints."
 bfirmb_get_blueprint = requestblocks.SelectBlueprint()
 bfirmb_get_player = requestblocks.SelectPlayer()
@@ -267,9 +276,9 @@ business_office.type = "economic"
 business_office.icon = ['hammer', 'fisherman']
 business_office.owner = "blueprint"
 business_office.usage_limit = 1
-business_office.players = { 3 : False,
-                            4 : False,
-                            5 : False }
+business_office.player_count = {3 : False,
+                                4 : False,
+                                5 : False}
 business_office.description = "Trade 4 goods for 1 Steel and/or 1 item for 1 Charcoal, Leather or Brick."
 boffice_request_steel = requestblocks.SetTradeRequest(['steel'])
 boffice_request_ChLeBr = requestblocks.SetTradeRequest(['charcoal', 'leather', 'brick'])
@@ -289,11 +298,11 @@ charcoal_kiln.type = "craftsman"
 charcoal_kiln.icon = ['none']
 charcoal_kiln.owner = "blueprint"
 charcoal_kiln.usage_limit = 1
-charcoal_kiln.players = { 1 : False,
-                          2 : False,
-                          3 : False,
-                          4 : False,
-                          5 : False }
+charcoal_kiln.player_count = {1 : False,
+                              2 : False,
+                              3 : False,
+                              4 : False,
+                              5 : False}
 charcoal_kiln.description = "Convert Wood to Charcoal."
 ckiln_get_quantity = requestblocks.GetQuantity('wood')
 charcoal_kiln.requests = [ckiln_get_quantity]
@@ -312,10 +321,10 @@ church.type = "public"
 church.icon = ['none']
 church.owner = "blueprint"
 church.usage_limit = 1
-church.players = { 2 : False,
-                   3 : False,
-                   4 : False,
-                   5 : False }
+church.player_count = {2 : False,
+                       3 : False,
+                       4 : False,
+                       5 : False}
 church.description = "Un-purchasable. Receive an additional 5 Bread and 3 Fish if you have 5 Bread and 2 Fish."
 church_check_resources = actionblocks.CheckResources({'bread' : 5, 'fish' : 2})
 church_get_bread = actionblocks.ReceiveItems('bread', 5)
@@ -332,11 +341,11 @@ clay_mound.type = "none"
 clay_mound.icon = ['none']
 clay_mound.owner = "blueprint"
 clay_mound.usage_limit = 1
-clay_mound.players = { 1 : False,
-                       2 : False,
-                       3 : False,
-                       4 : False,
-                       5 : False }
+clay_mound.player_count = {1 : False,
+                           2 : False,
+                           3 : False,
+                           4 : False,
+                           5 : False}
 clay_mound.description = "Un-buildable. Receive 3 Clay plus an additional 1 Clay for each owned 'Hammer' buildings."
 cmound_select_player = requestblocks.SelectPlayer()
 clay_mound.requests = [cmound_select_player]
@@ -353,11 +362,11 @@ cokery.type = "industrial"
 cokery.icon = ['none']
 cokery.owner = "blueprint"
 cokery.usage_limit = 1
-cokery.players = { 1 : False,
-                   2 : False,
-                   3 : False,
-                   4 : False,
-                   5 : False }
+cokery.player_count = {1 : False,
+                       2 : False,
+                       3 : False,
+                       4 : False,
+                       5 : False}
 cokery.description = "Convert Coal to Coke. Receive 1 Money for every Coke made."
 cokery_get_quantity = requestblocks.GetQuantity('coal')
 cokery.requests = [cokery_get_quantity]
@@ -376,11 +385,11 @@ colliery.type = "industrial"
 colliery.icon = ['none']
 colliery.owner = "blueprint"
 colliery.usage_limit = 1
-colliery.players = { 1 : False,
-                     2 : False,
-                     3 : False,
-                     4 : False,
-                     5 : False }
+colliery.player_count = {1 : False,
+                         2 : False,
+                         3 : False,
+                         4 : False,
+                         5 : False}
 colliery.description = "Receive 3 Coal plus an additional 1 Coal if you own any 'Hammer' buildings."
 colliery_select_player = requestblocks.SelectPlayer()
 colliery.requests = [colliery_select_player]
@@ -397,11 +406,11 @@ construction_firm.type = "industrial"
 construction_firm.icon = ['hammer']
 construction_firm.owner = "game"
 construction_firm.usage_limit = 2
-construction_firm.players = { 1 : True,
-                              2 : True,
-                              3 : True,
-                              4 : True,
-                              5 : True }
+construction_firm.player_count = {1 : True,
+                                  2 : True,
+                                  3 : True,
+                                  4 : True,
+                                  5 : True}
 construction_firm.description = "Build up to 2 buildings from the available blueprints."
 cfirm_get_blueprint = requestblocks.SelectBlueprint()
 cfirm_get_player = requestblocks.SelectPlayer()
@@ -421,8 +430,8 @@ dock.type = "industrial"
 dock.icon = ['none']
 dock.owner = "blueprint"
 dock.usage_limit = 0
-dock.players = { 4 : False,
-                 5 : False }
+dock.player_count = {4 : False,
+                     5 : False}
 dock.description = "Unusable. Endgame value. Ships add 4 value each."
 
 ''' F '''
@@ -436,11 +445,11 @@ fishery.type = "commercial"
 fishery.icon = ['fisherman']
 fishery.owner = "blueprint"
 fishery.usage_limit = 1
-fishery.players = { 1 : False,
-                    2 : False,
-                    3 : False,
-                    4 : False,
-                    5 : False }
+fishery.player_count = {1 : False,
+                        2 : False,
+                        3 : False,
+                        4 : False,
+                        5 : False}
 fishery.description = "Receive 3 Fish plus an additional 1 Fish for each owned 'Fisherman' buildings."
 fishery_select_player = requestblocks.SelectPlayer()
 fishery.requests = [fishery_select_player]
@@ -458,9 +467,9 @@ grocery.type = "economic"
 grocery.icon = ['none']
 grocery.owner = "blueprint"
 grocery.usage_limit = 1
-grocery.players = { 3 : False,
-                    4 : False,
-                    5 : False }
+grocery.player_count = {3 : False,
+                        4 : False,
+                        5 : False}
 grocery.description = "Receive 1 Cattle, 1 Meat, 1 Fish, 1 Smoked Fish, 1 Grain and 1 Bread."
 grocery_get_cattle = actionblocks.ReceiveItems('cattle', 1)
 grocery_get_meat = actionblocks.ReceiveItems('meat', 1)
@@ -481,9 +490,9 @@ hardware.type = "commercial"
 hardware.icon = ['hammer', 'fisherman']
 hardware.owner = "blueprint"
 hardware.usage_limit = 1
-hardware.players = { 3 : False,
-                     4 : False,
-                     5 : False }
+hardware.player_count = {3 : False,
+                         4 : False,
+                         5 : False}
 hardware.description = "Receive 1 Wood, 1 Brick and 1 Iron."
 hardware_get_wood = actionblocks.ReceiveItems('wood', 1)
 hardware_get_brick = actionblocks.ReceiveItems('brick', 1)
@@ -501,11 +510,11 @@ ironworks.type = "industrial"
 ironworks.icon = ['hammer']
 ironworks.owner = "blueprint"
 ironworks.usage_limit = 1
-ironworks.players = { 1 : False,
-                      2 : False,
-                      3 : False,
-                      4 : False,
-                      5 : False }
+ironworks.player_count = {1 : False,
+                          2 : False,
+                          3 : False,
+                          4 : False,
+                          5 : False}
 ironworks.description = "Receive 3 Iron. An additional 1 Iron is available for 6 Energy."
 ironworks_get_energy = requestblocks.GetQuantity ('energy')
 ironworks.requests = [ironworks_get_energy]
@@ -525,9 +534,9 @@ joinery.type = "commercial"
 joinery.icon = ['hammer']
 joinery.owner = "blueprint"
 joinery.usage_limit = 1
-joinery.players = { 3 : False,
-                    4 : False,
-                    5 : False }
+joinery.player_count = {3 : False,
+                        4 : False,
+                        5 : False}
 joinery.description = "Sell 1-3 Wood for 5-7 Money."
 joinery_exchange_wood = requestblocks.GetExchangeRequest('wood', [1,2,3])
 joinery.requests = [joinery_exchange_wood]
@@ -545,9 +554,9 @@ court.type = "public"
 court.icon = []
 court.owner = "blueprint"
 court.usage_limit = 1
-court.players = { 3 : False,
-                  4 : False,
-                  5 : False }
+court.player_count = {3 : False,
+                      4 : False,
+                      5 : False}
 court.description = "Close Loans. If you have 1, close it. If you have 2, close 1 and get 2 Money. If you have more, close 2."
 court_close_loans = actionblocks.CloseLoans()
 court.actions = [court_close_loans]
@@ -563,11 +572,11 @@ market.type = "none"
 market.icon = []
 market.owner = "blueprint"
 market.usage_limit = 1
-market.players = { 1 : False,
-                   2 : False,
-                   3 : False,
-                   4 : False,
-                   5 : False }
+market.player_count = {1 : False,
+                       2 : False,
+                       3 : False,
+                       4 : False,
+                       5 : False}
 market.description = "Receive 2 different standard item and an additional item for each owned 'Craftsman' building."
 market_select_player = requestblocks.SelectPlayer()
 market.requests = [market_select_player]
@@ -590,9 +599,9 @@ sawmill_get_blueprint = requestblocks.SelectBlueprint('wood')
 sawmill_get_player = requestblocks.SelectPlayer()
 sawmill.requests = [sawmill_get_blueprint, sawmill_get_player]
 sawmill_build = actionblocks.Construct({'wood': 1})
-sawmill.players = { 3 : False,
-                    4 : True,
-                    5 : True }
+sawmill.player_count = {3 : False,
+                        4 : True,
+                        5 : True}
 sawmill.actions = [sawmill_build]
 
 shipping_line = Building()
@@ -605,11 +614,11 @@ shipping_line.type = "economic"
 shipping_line.icon = ['fisherman']
 shipping_line.owner = "blueprint"
 shipping_line.usage_limit = 1
-shipping_line.players = { 1 : False,
-                          2 : False,
-                          3 : False,
-                          4 : False,
-                          5 : False }
+shipping_line.player_count = {1 : False,
+                              2 : False,
+                              3 : False,
+                              4 : False,
+                              5 : False}
 shipping_line.description = "Ship goods for 3 Energy per loaded ship."
 shipping_line_get_player = requestblocks.SelectPlayer()
 shipping_line_get_shipment = requestblocks.GetShipment()
@@ -627,11 +636,11 @@ smokehouse.type = "commercial"
 smokehouse.icon = ['fisherman']
 smokehouse.owner = "blueprint"
 smokehouse.usage_limit = 1
-smokehouse.players = { 1 : False,
-                       2 : False,
-                       3 : False,
-                       4 : False,
-                       5 : False }
+smokehouse.player_count = {1 : False,
+                           2 : False,
+                           3 : False,
+                           4 : False,
+                           5 : False}
 smokehouse.description = "Make upto 6 Smoked Fish from Fish for 1 Energy. Receive 1 Money for every 3 Fish smoked."
 smokehouse_get_quantity = requestblocks.GetQuantity('fish', 6)
 smokehouse.requests = [smokehouse_get_quantity]
@@ -651,11 +660,11 @@ steel_mill.type = "industrial"
 steel_mill.icon = []
 steel_mill.owner = "blueprint"
 steel_mill.usage_limit = 1
-steel_mill.players = { 1 : False,
-                       2 : False,
-                       3 : False,
-                       4 : False,
-                       5 : False }
+steel_mill.player_count = {1 : False,
+                           2 : False,
+                           3 : False,
+                           4 : False,
+                           5 : False}
 steel_mill.description = "Make Steel from Iron spending 5 Energy for each."
 steel_get_quantity = requestblocks.GetQuantity('iron')
 steel_mill.requests = [steel_get_quantity]
@@ -675,8 +684,8 @@ storehouse.type = "economic"
 storehouse.icon = ['hammer']
 storehouse.owner = "blueprint"
 storehouse.usage_limit = 0
-storehouse.players = { 4 : False,
-                       5 : False }
+storehouse.player_count = {4 : False,
+                           5 : False}
 storehouse.description = "Unusable. Endgame value. Receive 1 Money for every 2 goods."
 
 ''' T '''
@@ -690,11 +699,11 @@ tannery.type = "commercial"
 tannery.icon = []
 tannery.owner = "blueprint"
 tannery.usage_limit = 1
-tannery.players = { 1 : False,
-                    2 : False,
-                    3 : False,
-                    4 : False,
-                    5 : False }
+tannery.player_count = {1 : False,
+                        2 : False,
+                        3 : False,
+                        4 : False,
+                        5 : False}
 tannery.description = "Make upto 4 Leather from Hides. Receive 1 money for every Hide tanned."
 tannery_get_quantity = requestblocks.GetQuantity('hides', 4)
 tannery.requests = [tannery_get_quantity]
@@ -714,10 +723,10 @@ town_hall.type = "public"
 town_hall.icon = []
 town_hall.owner = "blueprint"
 town_hall.usage_limit = 0
-town_hall.players = { 2 : False,
-                      3 : False,
-                      4 : False,
-                      5 : False }
+town_hall.player_count = {2 : False,
+                          3 : False,
+                          4 : False,
+                          5 : False}
 town_hall.description = "Unusable. Endgame value. Each Public buildings add 4 value and Craftsman buildings add 2 value."
 
 ''' W '''
@@ -731,11 +740,11 @@ wharf1.type = "industrial"
 wharf1.icon1 = []
 wharf1.owner = "blueprint"
 wharf1.usage_limit = 1
-wharf1.players = { 1 : False,
-                   2 : False,
-                   3 : False,
-                   4 : False,
-                   5 : False }
+wharf1.player_count = {1 : False,
+                       2 : False,
+                       3 : False,
+                       4 : False,
+                       5 : False}
 wharf1.description = "Build an available ship. "
 wharf1.non_modern_desc = "Must be modernized with a 'Brick' once to build non-wooden ships."
 wharf1.modern_desc = "Modernized. Can build all ships."
@@ -756,9 +765,9 @@ wharf2.type = "industrial"
 wharf2.icon1 = []
 wharf2.owner = "blueprint"
 wharf2.usage_limit = 1
-wharf2.players = { 3 : False,
-                   4 : False,
-                   5 : False }
+wharf2.player_count = {3 : False,
+                       4 : False,
+                       5 : False}
 wharf2.description = "Build an available ship. "
 wharf2.non_modern_desc = "Must be modernized with a 'Brick' once to build non-wooden ships."
 wharf2.modern_desc = "Modernized. Can build all ships."

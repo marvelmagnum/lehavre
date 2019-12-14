@@ -153,6 +153,7 @@ def run_game():
             if turns == 7:
                 turns = 1
                 print("Round " + str(rounds) + " ends.")
+                gamefunctions.round_end(game_state)
             else:
                 turns += 1
 

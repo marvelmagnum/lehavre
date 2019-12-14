@@ -135,3 +135,23 @@ def occupy_building(building):
             b.current_user = 'none'
     building.current_user = gamestate.game_state.current_player
     gamestate.game_state.current_player.location = building.name
+
+
+def do_harvest(game_state):
+    """ Perform Harvest Phase """
+    for player in game_state.players:
+        player.take_harvest()
+
+def round_end(game_state):
+    """ End of round bookkeeping """
+    ship_card = game_state.harvest.pop()
+    pl_count = len(game_state.players)
+
+    # harvest phase if available
+    if ship_card.harvest[pl_count][2] == True:
+        do_harvest(game_state)
+
+    # feeding phase
+    # town building phase
+    # new ship
+
