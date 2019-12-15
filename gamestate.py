@@ -45,7 +45,10 @@ class GameState:
 
     stacks = [[],[],[]] # 3 stacks of available building cards during the game
     harvest = [] # harvest round stack according to number of players
-    ships = { 'game' : [] } # available ships during the game. belonging to game and players.
+    ships = { 'game' : { 'wooden' : [],
+                         'iron' : [],
+                         'steel' : [],
+                         'liner' : [] } } # available ships during the game. belonging to game and players. players don't have a dictionary. Just a list of owned ships.
 
     blueprints = [buildings.abattoir,
                   buildings.arts_center,

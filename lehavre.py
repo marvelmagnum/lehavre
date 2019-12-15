@@ -14,7 +14,9 @@ commands = {1: 'money',
             4: 'clay',
             5: 'iron',
             6: 'grain',
-            7: 'cattle'}
+            7: 'cattle',
+            8: 'buy buildings / ships',
+            9: 'sell buildings / ships'}
 
 
 def init():
@@ -32,7 +34,7 @@ def init():
     #     pname = input("P" + str(i+1) + " name: ")
     game_state.players.append(Player.create_player("Marvel"))
     #for i in range(0, ai_count):
-    game_state.players.append((Player.create_player("ai")))
+    game_state.players.append((Player.create_player("AI")))
     Building.setup_offers(game_state)
     Ship.setup_rounds(game_state)
 
@@ -67,9 +69,14 @@ def assemble_commands():
     print("COMMANDS")
     for key, value in commands.items():
         print(str(key) + ": " + value.title())
-    com_count = 8
+    com_count = 10
     for b in game_state.constructed:          # available usable buildings
-        print(str(com_count) + ": " + b.name.title(), end="")
+        print(str(com_count) + ": ", end="")
+        if b.owner == 'game':
+            print("City's ", end="")
+        else:
+            print(b.owner.name + "'s ", end="")
+        print(b.name.title(), end="")
         if b.current_user != 'none':
             print(" <Occupied by " + b.current_user.name + ">", end="")
         if 'wharf' in b.name:
@@ -92,32 +99,42 @@ def process_command(com, count):
             game_state.current_player.inventory[commands[com]] = game_state.offers[commands[com]]
         game_state.offers[commands[com]] = 0
         return True
+
+    elif com == 8:  # buy additional action
+        game_state.current_player.perform_buy(game_state)
+        return False
+
+    elif com == 9:  # sell additional action
+        game_state.current_player.perform_sell(game_state)
+        return False
+
     elif com < count:   # usable buildings
-        if game_state.constructed[com - 8].usage_limit == 0:
-            print(game_state.constructed[com - 8].name.title() + " is not usable.")
+        building = game_state.constructed[com - 10]
+        if building.usage_limit == 0:
+            print(building.name.title() + " is not usable.")
             return False
 
-        if game_state.constructed[com - 8].current_user != 'none':
-            print(game_state.constructed[com - 8].name.title() + " is already occupied.")
+        if building.current_user != 'none':
+            print(building.name.title() + " is already occupied.")
             return False
 
-        fees_paid = gamefunctions.get_entry_cost(game_state.constructed[com - 8])     # collect entry fees
-        if fees_paid or not game_state.constructed[com - 8].fees:
+        fees_paid = gamefunctions.get_entry_cost(game_state, building)     # collect entry fees
+        if fees_paid or not building.fees:
             use = 0
-            while use < game_state.constructed[com-8].usage_limit:  # building which allow more than 1 use
-                if game_state.constructed[com - 8].use(game_state.constructed[com - 8].ask(game_state)):
-                    print(game_state.constructed[com - 8].name.title() + " was successfully used.")
-                    gamefunctions.occupy_building(game_state.constructed[com - 8])
+            while use < building.usage_limit:  # building which allow more than 1 use
+                if building.use(building.ask(game_state)):
+                    print(building.name.title() + " was successfully used.")
+                    gamefunctions.occupy_building(game_state, building)
                     use += 1
-                    if use < game_state.constructed[com-8].usage_limit:
-                        print("Use the " + game_state.constructed[com-8].name.title() + " again ? ")
+                    if use < game_state.constructed[com-10].usage_limit:
+                        print("Use the " + game_state.constructed[com-10].name.title() + " again ? ")
                         print("1. Yes")
                         print("2. No")
                         ans = input("? ")
                         if int(ans) != 1:
                             break
                 else:   # use of building failed
-                    print(game_state.constructed[com - 8].name.title() + " could not be used.")
+                    print(building.name.title() + " could not be used.")
                     successful = False
                     break
             if use == 0 and fees_paid:  # refund fees if building could not be used
@@ -138,7 +155,6 @@ def run_game():
         update_offers(turns, pid)
         show_inventory()
         command_count = assemble_commands()
-
         proceed = False
         if game_state.current_player.type == 'human':
             command = input("? ")
@@ -148,6 +164,8 @@ def run_game():
             proceed = process_command(com, command_count)
         elif game_state.current_player.type == 'computer':
             proceed = logic.process_ai(game_state)
+            print(game_state.current_player.name.upper() + " has finished its turn...")
+            input()
 
         if proceed == True:
             if turns == 7:

@@ -43,16 +43,18 @@ class Building:
                 return False         # action failed. any action failure usually means the building use failed
         return True           # building used normally
 
+
     @staticmethod
     def setup_offers(game_state):
-        # Find available blueprints
+        """ Setup initial building stacks for game """
+        ''' Find available blueprints '''
         available = []
         pl_count = len(game_state.players)
         for building in game_state.blueprints:
             if pl_count in building.player_count:
                 available.append(building)
 
-        # Find starting buildings
+        ''' Find starting buildings '''
         start_buildings = []
         for building in available:
             if building.player_count[pl_count] == True:
@@ -61,8 +63,7 @@ class Building:
             game_state.constructed.append(building)
             available.remove(building)
 
-        # Split remaining into 3 blueprint offer stacks
-        stack_size = len(available) / 3
+        ''' Split remaining into 3 blueprint offer stacks '''
         random.shuffle(available)
         idx = 0
         while len(available) > 0:
@@ -71,7 +72,7 @@ class Building:
                 idx = 0
             else:
                 idx += 1
-        # Sort the stacks by rank
+        ''' Sort the stacks by rank '''
         for i in range(0,3):
             game_state.stacks[i].sort(key=lambda x: x.rank)
 
