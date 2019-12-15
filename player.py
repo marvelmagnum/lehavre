@@ -1,4 +1,5 @@
 import resources
+import math
 
 class Player:
     name = "unnamed"    # player name: p1, p2, p3, ...
@@ -8,7 +9,7 @@ class Player:
 
     def __init__(self, name, type):
         self.name = name
-        self.inventory = {'money': 5, 'coal': 1, 'wood': 4 }
+        self.inventory = {'money': 1, 'coal': 1 }
         self.location = 'none'
         self.type = type
 
@@ -198,37 +199,60 @@ class Player:
             print(self.name + " did not produce Grain or Cattle.")
 
 
-    def feed(self, food):
+    def take_loan(self, food_req):
+        """ Takes as many loans reqd """
+        loan_count = int(math.ceil(food_req / 4))
+        print("You will need " + str(loan_count) + " loans to cover your food deficit of " + str(food_req) + ".")
+        ans = input("How many loans do you want to take out ? ")
+        if 'loan' in self.inventory:
+            self.inventory['loan'] += int(ans)
+        else:
+            self.inventory['loan'] = int(ans)
+        self.inventory['money'] += int(ans) * 4
+        print("You take out " + ans + " loans and receive " + str(int(ans) * 4) + " money.")
+        
+
+    def feed(self, game_state, food):
         """ Handle feeding req at round ends """
         print (self.name + " needs to arrange for " + str(food) + " food.")
-        foodstuff = []
-        for key, value in self.inventory.items():
-            if resources.resource_map[key].food > 0 and self.inventory[key] > 0:
-                foodstuff.append((resources.resource_map[key], value))
-        print("You have:")
-        idx = 1
-        for food_item, quantity in foodstuff:
-            print(str(idx) + ". " + food_item.name.title() + ": " + str(quantity)
-                  + " [" + str(food_item.food) + " food each]")
-            idx += 1
-        chosen_fees = []
         while True:
-            ans = input("Select food to consume: ")
-            if int(ans) > len(foodstuff):
-                continue
-            entry = foodstuff[int(ans) - 1];
-            num = input("How many: ")
-            if int(num) <= entry[1]:
-                food -= entry[0].food * int(num)
-                print("You have consumed " + str(entry[0].food * int(num)) + ' ' + entry[0].name.title() + '. ',
-                      end=" ")
-                chosen_fees.append((entry[0].name, int(num)))
-                self.inventory[entry[0].name] -= int(num)
-                if food <= 0:
-                    print(self.name + " has successfully met the feeding requirement.")
-                    break
+            foodstuff = []
+            avail_food = 0
+            for key, value in self.inventory.items():
+                if resources.resource_map[key].food > 0 and self.inventory[key] > 0:
+                    foodstuff.append((resources.resource_map[key], value))
+                    avail_food += resources.resource_map[key].food * self.inventory[key]
+            if (avail_food >= food): # has enough food to feed
+                print("You have:")
+                idx = 1
+                for food_item, quantity in foodstuff:
+                    print(str(idx) + ". " + food_item.name.title() + ": " + str(quantity)
+                          + " [" + str(food_item.food) + " food each]")
+                    idx += 1
+                chosen_fees = []
+                ans = input("Select food to consume: ")
+                entry = foodstuff[int(ans) - 1];
+                num = input("How many: ")
+                if int(num) <= entry[1]:
+                    food -= entry[0].food * int(num)
+                    print("You have consumed " + str(entry[0].food * int(num)) + ' ' + entry[0].name.title() + '. ',
+                          end=" ")
+                    chosen_fees.append((entry[0].name, int(num)))
+                    self.inventory[entry[0].name] -= int(num)
+                    if food <= 0:
+                        print(self.name + " has successfully met the feeding requirement.")
+                        break
+                    else:
+                        print("Need to consume " + str(food) + " more food.")
                 else:
-                    print("Need to consume " + str(food) + " more food.")
-            else:
-                ''' TODO: not enough food. need to take loan or sell buildings'''
-                print("You don't have " + num + ' ' + entry[0].name.title())
+                    print("You don't have " + num + ' ' + entry[0].name.title())
+            else: # not enough food. sell property or take loan
+                print("You do not have enough food in your storage.")
+                print("Your options:")
+                print("1. Sell Buildings / Ships")
+                print("2. Take Loan")
+                ans = input("? ")
+                if int(ans) == 1: # sell property
+                    self.perform_sell(game_state)
+                elif int(ans) == 2:  # take loan
+                    self.take_loan(food)

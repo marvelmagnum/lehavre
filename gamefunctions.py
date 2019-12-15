@@ -146,6 +146,8 @@ def perform_feeding(game_state, food_req):
     """ Perform Feeding Phase"""
     pl_count = len(game_state.players)
     for player in game_state.players:
+        if player.type == 'computer':
+            continue
         if player in game_state.ships:
             ship_food = 0
             for ship in game_state.ships[player]:
@@ -153,7 +155,7 @@ def perform_feeding(game_state, food_req):
                 print (player.name + "'s " + ship.type + ', ' + ship.name.title() + ", brought in " + str(ship.food[pl_count]) + " food.")
                 food_req -= ship_food
         if food_req > 0:
-            player.feed(food_req)
+            player.feed(game_state, food_req)
 
 
 def round_end(game_state):

@@ -97,6 +97,7 @@ def process_command(com, count):
             game_state.current_player.inventory[commands[com]] += game_state.offers[commands[com]]
         else:
             game_state.current_player.inventory[commands[com]] = game_state.offers[commands[com]]
+        print(game_state.current_player.name + " collects " + str(game_state.offers[commands[com]]) + ' ' + commands[com])
         game_state.offers[commands[com]] = 0
         return True
 
