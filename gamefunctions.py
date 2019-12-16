@@ -143,7 +143,7 @@ def do_harvest(game_state):
 
 
 def perform_feeding(game_state, food_req):
-    """ Perform Feeding Phase"""
+    """ Perform Feeding Phase """
     pl_count = len(game_state.players)
     for player in game_state.players:
         if player.type == 'computer':
@@ -158,23 +158,61 @@ def perform_feeding(game_state, food_req):
             player.feed(game_state, food_req)
 
 
+def develop_town(game_state, development_type):
+    """ Handles town development at round end """
+    ''' TODO: Handle special and standard buildings separately when added to game '''
+    if development_type == 'standard' or development_type == 'special':
+        priority = 1000
+        building = 'none'
+        idx = -1
+        for i in range(0,3):
+            if game_state.stacks[i]:
+                if game_state.stacks[i].rank < priority:
+                    priority = game_state.stacks[i][0].rank
+                    building = game_state.stacks[i][0]
+                    idx = i
+        building.owner = 'game'
+        game_state.constructed.append(building)
+        game_state.stacks[idx].pop()
+        print ("City has completed construction of the " + building.name.title())
+
+
 def round_end(game_state):
     """ End of round bookkeeping """
     ship_card = game_state.harvest.pop()
     pl_count = len(game_state.players)
-
     ''' harvest phase if available '''
     if ship_card.harvest[pl_count][1] == True:
         print("Harvest Phase")
         do_harvest(game_state)
     else:
         print("No Harvest this round.")
-
     ''' feeding phase '''
     print("Feeding Phase")
     print("Players need to satisfy the feeding requirement of " + str(ship_card.harvest[pl_count][2]) + " food.")
     perform_feeding(game_state, ship_card.harvest[pl_count][2])
-
     ''' town building phase '''
+    if ship_card.harvest[pl_count][3] != 'none':
+        develop_town(game_state, ship_card.harvest[pl_count][3])
+    else:
+        print("No Town Development this round.")
     ''' new ship '''
+    print("A new ", end="")
+    if ship_card.type == 'wooden ship':
+        game_state.ships['game']['wooden'].append(ship_card)
+        print(ship_card.type.title() + ' "' + ship_card.name.title() + '" ', end="")
+    elif ship_card.type == 'iron ship':
+        game_state.ships['game']['iron'].append(ship_card)
+        print(ship_card.type.title() + ' "' + ship_card.name.title() + '" ', end="")
+    elif ship_card.type == 'steel ship':
+        game_state.ships['game']['steel'].append(ship_card)
+        print(ship_card.type.title() + ' "' + ship_card.name.title() + '" ', end="")
+    elif ship_card.type == 'luxury liner':
+        game_state.ships['game']['liner'].append(ship_card)
+        print(ship_card.type.title() + ' "' + ship_card.name.title() + '" ', end="")
+    print("is now available for sale.")
 
+
+def pay_interest(game_state):
+    """ Collect interest from players who have 1 or more loans """
+    print("TODO: IMPLEMENT INTEREST COLLECTION ROUTINE!")
