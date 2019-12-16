@@ -38,16 +38,18 @@ def init():
     Building.setup_offers(game_state)
     Ship.setup_rounds(game_state)
 
-def update_offers(turn, pid):
+def update_offers(turn, round, pid):
     """ Shows turn values, player, sets bases and updates offers """
     game_state.current_player = game_state.players[pid];
+    if turn == 1:
+        print("Round " + str(round) + " starts.")
     print("Current Player: " + game_state.current_player.name)
     print("Turn " + str(turn) + ": " + str(game_state.bases[turn - 1]))
     game_state.offers[game_state.bases[turn - 1][0]] += 1
     game_state.offers[game_state.bases[turn - 1][1]] += 1
     if len(game_state.bases[turn - 1]) > 2:
-        print("PAY INTEREST")
-
+        print("Collection of Interest on Loans commences...")
+        gamefunctions.pay_interest(game_state)
     print("OFFERS", end=": ")
     for key, value in game_state.offers.items():
         print("[ " + key.title() + ": " + str(value) + " ]", end="")
@@ -153,7 +155,7 @@ def run_game():
     turns = 1
     pid = 0
     while True:
-        update_offers(turns, pid)
+        update_offers(turns, rounds, pid)
         show_inventory()
         command_count = assemble_commands()
         proceed = False
@@ -172,6 +174,7 @@ def run_game():
             if turns == 7:
                 turns = 1
                 print("Round " + str(rounds) + " ends.")
+                rounds += 1
                 gamefunctions.round_end(game_state)
             else:
                 turns += 1

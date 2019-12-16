@@ -210,7 +210,26 @@ class Player:
             self.inventory['loan'] = int(ans)
         self.inventory['money'] += int(ans) * 4
         print("You take out " + ans + " loans and receive " + str(int(ans) * 4) + " money.")
-        
+
+
+    def handle_food_deficit(self, game_state, foodstuff, avail_food, food):
+        """ Not enough food. sell property or take loan """
+        print("You do not have enough food.")
+        if avail_food > 0:
+            for food_item, quantity in foodstuff:
+                self.inventory[food_item.name] = 0
+                print(str(quantity) + ' x ' + food_item.name.title() + '(' + str(food_item.food) + ' food) ', end="")
+            print(" were consumed from your storage.")
+            print("You still have " + str(food - avail_food) + " food deficit.")
+        print("Your options:")
+        print("1. Sell Buildings / Ships")
+        print("2. Take Loan")
+        ans = input("? ")
+        if int(ans) == 1:  # sell property
+            self.perform_sell(game_state)
+        elif int(ans) == 2:  # take loan
+            self.take_loan(food - avail_food)
+
 
     def feed(self, game_state, food):
         """ Handle feeding req at round ends """
@@ -229,7 +248,6 @@ class Player:
                     print(str(idx) + ". " + food_item.name.title() + ": " + str(quantity)
                           + " [" + str(food_item.food) + " food each]")
                     idx += 1
-                chosen_fees = []
                 ans = input("Select food to consume: ")
                 entry = foodstuff[int(ans) - 1];
                 num = input("How many: ")
@@ -237,7 +255,6 @@ class Player:
                     food -= entry[0].food * int(num)
                     print("You have consumed " + str(entry[0].food * int(num)) + ' ' + entry[0].name.title() + '. ',
                           end=" ")
-                    chosen_fees.append((entry[0].name, int(num)))
                     self.inventory[entry[0].name] -= int(num)
                     if food <= 0:
                         print(self.name + " has successfully met the feeding requirement.")
@@ -246,13 +263,6 @@ class Player:
                         print("Need to consume " + str(food) + " more food.")
                 else:
                     print("You don't have " + num + ' ' + entry[0].name.title())
-            else: # not enough food. sell property or take loan
-                print("You do not have enough food in your storage.")
-                print("Your options:")
-                print("1. Sell Buildings / Ships")
-                print("2. Take Loan")
-                ans = input("? ")
-                if int(ans) == 1: # sell property
-                    self.perform_sell(game_state)
-                elif int(ans) == 2:  # take loan
-                    self.take_loan(food)
+            else:
+                self.handle_food_deficit(game_state, foodstuff, avail_food, food)
+                food -= avail_food
