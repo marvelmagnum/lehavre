@@ -167,7 +167,7 @@ def develop_town(game_state, development_type):
         idx = -1
         for i in range(0,3):
             if game_state.stacks[i]:
-                if game_state.stacks[i].rank < priority:
+                if game_state.stacks[i][0].rank < priority:
                     priority = game_state.stacks[i][0].rank
                     building = game_state.stacks[i][0]
                     idx = i
@@ -215,4 +215,18 @@ def round_end(game_state):
 
 def pay_interest(game_state):
     """ Collect interest from players who have 1 or more loans """
-    print("TODO: IMPLEMENT INTEREST COLLECTION ROUTINE!")
+    ''' TODO: Have option for players to be able to play off loan before paying interest '''
+    loan_count = 0
+    for player in game_state.players:
+        if 'loan' in player.inventory and player.inventory['loan'] > 0:
+            if player.inventory['money'] > 0:
+                player.inventory['money'] -= 1
+            else:
+                player.inventory['loan'] += 1
+                player.inventory['money'] += 3
+                print(player.name + " had to take a loan. Received 4 money.")
+            print(player.name + " pays 1 money towards loan interest.")
+            loan_count += 1
+
+    if loan_count == 0:
+        print("Nobody has any active loans.")

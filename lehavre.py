@@ -65,7 +65,6 @@ def show_inventory():
     print()
 
 
-# TODO: Handle additional actions like buy/sell
 def assemble_commands():
     """ Assemble the available commands """
     print("COMMANDS")

@@ -9,7 +9,7 @@ class Player:
 
     def __init__(self, name, type):
         self.name = name
-        self.inventory = {'money': 1, 'coal': 1 }
+        self.inventory = {'money': 5, 'coal': 1}
         self.location = 'none'
         self.type = type
 
