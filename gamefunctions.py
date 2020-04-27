@@ -215,18 +215,31 @@ def round_end(game_state):
 
 def pay_interest(game_state):
     """ Collect interest from players who have 1 or more loans """
-    ''' TODO: Have option for players to be able to play off loan before paying interest '''
+    ''' TODO: AI need to autonomously choose between paying interest of repaying loan based on its strategy.'''
     loan_count = 0
     for player in game_state.players:
         if 'loan' in player.inventory and player.inventory['loan'] > 0:
-            if player.inventory['money'] > 0:
-                player.inventory['money'] -= 1
-            else:
-                player.inventory['loan'] += 1
-                player.inventory['money'] += 3
-                print(player.name + " had to take a loan. Received 4 money.")
-            print(player.name + " pays 1 money towards loan interest.")
-            loan_count += 1
+            if player.inventory['money'] >= 5:   # option to repay loan
+                print(player.name + " can repay active loans or pay interest.")
+                print("1. Repay Loan")
+                print("2. Pay Interest")
+                while True:
+                    ans = input("? ")
+                    if int(ans) == 1:
+                        player.repay_loan()
+                        break
+                    if int(ans) == 2:
+                        break;
+
+            if player.inventory['loan'] > 0:
+                if player.inventory['money'] > 0:
+                    player.inventory['money'] -= 1
+                else:
+                    player.inventory['loan'] += 1
+                    player.inventory['money'] += 3
+                    print(player.name + " had to take a loan. Received 4 money.")
+                print(player.name + " pays 1 money towards loan interest.")
+                loan_count += 1
 
     if loan_count == 0:
         print("Nobody has any active loans.")

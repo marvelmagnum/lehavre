@@ -18,6 +18,15 @@ commands = {1: 'money',
             8: 'buy buildings / ships',
             9: 'sell buildings / ships'}
 
+# Final turn commands
+final_commands = {1: 'money',
+                  2: 'fish',
+                  3: 'wood',
+                  4: 'clay',
+                  5: 'iron',
+                  6: 'grain',
+                  7: 'cattle',
+                  8: 'sell buildings / ships'}
 
 def init():
     """ Init game """
@@ -38,14 +47,19 @@ def init():
     Building.setup_offers(game_state)
     Ship.setup_rounds(game_state)
 
-def update_offers(turn, round, pid):
-    """ Shows turn values, player, sets bases and updates offers """
+
+def update_player(pid):
+    """ Updates current player """
     game_state.current_player = game_state.players[pid];
+    print("Current Player: " + game_state.current_player.name)
+
+
+def update_offers(turn, round):
+    """ Shows turn values, sets bases and updates offers """
     if turn == 1:
         print("Round " + str(round) + " starts.")
-    print("Current Player: " + game_state.current_player.name)
     print("Turn " + str(turn) + ": " + str(game_state.bases[turn - 1]))
-    game_state.offers[game_state.bases[turn - 1][0]] += 1
+    game_state.offers[game_state.bases[turn - 1][0]] += 11
     game_state.offers[game_state.bases[turn - 1][1]] += 1
     if len(game_state.bases[turn - 1]) > 2:
         print("Collection of Interest on Loans commences...")
@@ -71,6 +85,12 @@ def assemble_commands():
     for key, value in commands.items():
         print(str(key) + ": " + value.title())
     com_count = 10
+
+    ''' Provide option to close loan if current player has active loan and can pay it off. '''
+    if 'loan' in game_state.current_player.inventory and game_state.current_player.inventory['loan'] > 0 and game_state.current_player.inventory['money'] >= 5:
+        print(str(10) + ": Repay Loan")
+        com_count = 11
+
     for b in game_state.constructed:          # available usable buildings
         print(str(com_count) + ": ", end="")
         if b.owner == 'game':
@@ -93,6 +113,7 @@ def assemble_commands():
 
 def process_command(com, count):
     """ Process command inputs """
+    cmd_index_start = 10
     if 1 <= com <= 7:       # resource offers
         if commands[com] in game_state.current_player.inventory:
             game_state.current_player.inventory[commands[com]] += game_state.offers[commands[com]]
@@ -110,8 +131,15 @@ def process_command(com, count):
         game_state.current_player.perform_sell(game_state)
         return False
 
-    elif com < count:   # usable buildings
-        building = game_state.constructed[com - 10]
+    elif com < count:   # usable buildings (or possible repay loan action)
+        if 'loan' in game_state.current_player.inventory and game_state.current_player.inventory['loan'] > 0 and game_state.current_player.inventory['money'] >= 5:
+            cmd_index_start = 11
+
+        if com == 10 and cmd_index_start == 11:     # Repay loan is command 10 when valid
+            game_state.current_player.repay_loan()
+            return False
+
+        building = game_state.constructed[com - cmd_index_start]
         if building.usage_limit == 0:
             print(building.name.title() + " is not usable.")
             return False
@@ -128,8 +156,8 @@ def process_command(com, count):
                     print(building.name.title() + " was successfully used.")
                     gamefunctions.occupy_building(game_state, building)
                     use += 1
-                    if use < game_state.constructed[com-10].usage_limit:
-                        print("Use the " + game_state.constructed[com-10].name.title() + " again ? ")
+                    if use < game_state.constructed[com - cmd_index_start].usage_limit:
+                        print("Use the " + game_state.constructed[com - cmd_index_start].name.title() + " again ? ")
                         print("1. Yes")
                         print("2. No")
                         ans = input("? ")
@@ -148,13 +176,29 @@ def process_command(com, count):
                 return True
 
 
+def process_final_action(pid):
+    player_turns_taken = 0
+    while player_turns_taken < len(game_state.players):
+        update_player(pid)
+
+        ''' TODO: Finish last turn logic. final_commands array at start of file.'''
+
+        ''' Next player. Update number of players who have taken their final turn. '''
+        if pid >= len(game_state.players) - 1:
+            pid = 0
+        else:
+            pid += 1
+        player_turns_taken += 1
+
+
 def run_game():
     init()
     rounds = 1
     turns = 1
     pid = 0
     while True:
-        update_offers(turns, rounds, pid)
+        update_player(pid)
+        update_offers(turns, rounds)
         show_inventory()
         command_count = assemble_commands()
         proceed = False
@@ -169,19 +213,24 @@ def run_game():
             print(game_state.current_player.name.upper() + " has finished its turn...")
             input()
 
+        if pid >= len(game_state.players) - 1:
+            pid = 0
+        else:
+            pid += 1
+
         if proceed == True:
             if turns == 7:
                 turns = 1
                 print("Round " + str(rounds) + " ends.")
                 rounds += 1
                 gamefunctions.round_end(game_state)
+                if len(game_state.harvest) == 0:    # Final turn
+                    print("Final turn begins...")
+                    break;
             else:
                 turns += 1
 
-            if pid >= len(game_state.players) - 1:
-                pid = 0
-            else:
-                pid += 1
+    process_final_action(pid)
 
 
 game_state = GameState()

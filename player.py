@@ -202,14 +202,30 @@ class Player:
     def take_loan(self, food_req):
         """ Takes as many loans reqd """
         loan_count = int(math.ceil(food_req / 4))
-        print("You will need " + str(loan_count) + " loans to cover your food deficit of " + str(food_req) + ".")
-        ans = input("How many loans do you want to take out ? ")
+        print("You will need loan to cover your food deficit of " + str(food_req) + ".")
         if 'loan' in self.inventory:
-            self.inventory['loan'] += int(ans)
+            self.inventory['loan'] += loan_count
         else:
-            self.inventory['loan'] = int(ans)
-        self.inventory['money'] += int(ans) * 4
-        print("You take out " + ans + " loans and receive " + str(int(ans) * 4) + " money.")
+            self.inventory['loan'] = loan_count
+        self.inventory['money'] += loan_count * 4
+        print("You take out " + str(loan_count) + " loans and receive " + str(loan_count * 4) + " money.")
+
+
+    def repay_loan(self):
+        """ Repay loans """
+        max_repay = int(self.inventory['money'] / 5)
+        print("You can repay upto " + str(max_repay) + " of your total " + str(self.inventory['loan']) + " active loans.")
+        while True:
+            ans = input("Each loan will require 5 money to repay. How many do you want to repay ? ")
+            if int(ans) <= max_repay:
+                break;
+            print("You only have enough to repay " + str(max_repay) + " loans.")
+        self.inventory['money'] -= int(ans) * 5
+        self.inventory['loan'] -= int(ans)
+        if self.inventory['loan'] == 0:
+            print("You have repaid all active loans for " + str(int(ans) * 5) + " money." )
+        else:
+            print("You have repaid " + ans + " active loans for " + str(int(ans) * 5) + " money.")
 
 
     def handle_food_deficit(self, game_state, foodstuff, avail_food, food):
