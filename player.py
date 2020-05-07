@@ -1,9 +1,10 @@
 import resources
 import math
 
+
 class Player:
     name = "unnamed"    # player name: p1, p2, p3, ...
-    inventory =  {'none': 0}
+    inventory = {'none': 0}
     location = 'none'   # player's location: none, building names
     type = 'undefined'  # player type: "human", "computer"
 
@@ -218,7 +219,7 @@ class Player:
         while True:
             ans = input("Each loan will require 5 money to repay. How many do you want to repay ? ")
             if int(ans) <= max_repay:
-                break;
+                break
             print("You only have enough to repay " + str(max_repay) + " loans.")
         self.inventory['money'] -= int(ans) * 5
         self.inventory['loan'] -= int(ans)
@@ -247,16 +248,22 @@ class Player:
             self.take_loan(food - avail_food)
 
 
+    def get_avail_food(self):
+        """ Return amount of food in inventory as well as a list of tuples for the food item resource and the available qty """
+        foodstuff = []
+        avail_food = 0
+        for key, value in self.inventory.items():
+            if resources.resource_map[key].food > 0 and self.inventory[key] > 0:
+                foodstuff.append((resources.resource_map[key], value))
+                avail_food += resources.resource_map[key].food * self.inventory[key]
+        return avail_food, foodstuff
+
+
     def feed(self, game_state, food):
         """ Handle feeding req at round ends """
         print (self.name + " needs to arrange for " + str(food) + " food.")
         while True:
-            foodstuff = []
-            avail_food = 0
-            for key, value in self.inventory.items():
-                if resources.resource_map[key].food > 0 and self.inventory[key] > 0:
-                    foodstuff.append((resources.resource_map[key], value))
-                    avail_food += resources.resource_map[key].food * self.inventory[key]
+            avail_food, foodstuff = self.get_avail_food()
             if (avail_food >= food): # has enough food to feed
                 print("You have:")
                 idx = 1
@@ -265,7 +272,7 @@ class Player:
                           + " [" + str(food_item.food) + " food each]")
                     idx += 1
                 ans = input("Select food to consume: ")
-                entry = foodstuff[int(ans) - 1];
+                entry = foodstuff[int(ans) - 1]
                 num = input("How many: ")
                 if int(num) <= entry[1]:
                     food -= entry[0].food * int(num)
@@ -282,3 +289,16 @@ class Player:
             else:
                 self.handle_food_deficit(game_state, foodstuff, avail_food, food)
                 food -= avail_food
+
+
+    def get_ship_food(self, game_state):
+        """ Return amount of food generated from owned ships """
+        pl_count = len(game_state.players)
+        ship_food = 0
+        if self in game_state.ships:
+            for ship in game_state.ships[self]:
+                ship_food += ship.food[pl_count]
+                print(self.name + "'s " + ship.type + ', ' + ship.name.title() + ", brought in " + str(ship.food[pl_count]) + " food.")
+        return ship_food
+
+
