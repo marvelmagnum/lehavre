@@ -2,6 +2,7 @@ import math
 import gamefunctions
 import resources
 
+
 class RemoveItems:
     """ Removes 'item' type from inventory applying the 'modifier' """
     item = "undefined"
@@ -50,7 +51,7 @@ class ReceiveItems:
     bonus = 0
     limit = 0
 
-    def __init__(self, item, qty, icon = 'none', bonus = 0, limit = 0):
+    def __init__(self, item, qty, icon='none', bonus=0, limit=0):
         self.item = item
         self.quantity = qty
         self.icon = icon
@@ -77,14 +78,15 @@ class ReceiveItems:
                 total = self.limit
             if total > 0:
                 args[0].current_player.inventory[self.item] += total
-                print(" and an additional " + str(total) + " " + self.item.title() + " for your " + self.icon.title() + " buildings", end="")
+                print(" and an additional " + str(total) + " " + self.item.title() + " for your " + self.icon.title()
+                      + " buildings", end="")
         print(".")
         return True
 
 
 class Construct:
     """ Builds a blueprint, moves it to constructed, adds owner, deducts build cost applying the 'discount' """
-    discounts = {'item' : 0}
+    discounts = {'item': 0}
 
     def __init__(self, discounts):
         self.discounts = discounts
@@ -112,14 +114,15 @@ class Construct:
         idx = 0
         while idx < len(args[0].blueprints):
             if args[0].blueprints[idx].name == args[1].name:
-                break;
+                break
             idx += 1
         args[0].constructed.append(args[0].blueprints.pop(idx))
         return True
 
 
 class BuildShip:
-    """ Builds a ship using 'wharf' verifying modernization requirements, transfers ownership to player, deducts build cost """
+    """ Builds a ship using 'wharf' verifying modernization requirements,
+    transfers ownership to player, deducts build cost """
     wharf = None
 
     def __init__(self, wharf):
@@ -154,8 +157,8 @@ class BuildShip:
             else:
                 print("You don't have enough " + key.title())
                 return False
-        if gamefunctions.check_availability('energy', 3):
-            gamefunctions.collect_cost('energy', 3)
+        if gamefunctions.check_availability(args[0], 'energy', 3):
+            gamefunctions.collect_cost(args[0], 'energy', 3)
 
         args[0].ships[args[2]].append(args[1])
         args[0].ships['game'].remove(args[1])
@@ -186,11 +189,12 @@ class CollectTickets:
 
 
 class SpendEnergy:
-    """ Removes chosen energy item from inventory applying the 'modifier'. if 'set_qty' is non-zero, that values is used instead """
+    """ Removes chosen energy item from inventory applying the 'modifier'.
+    if 'set_qty' is non-zero, that values is used instead """
     modifier = 0.0
     set_qty = 0
 
-    def __init__(self,  mod, qty = 0):
+    def __init__(self,  mod, qty=0):
         self.modifier = mod
         self.set_qty = qty
 
@@ -203,8 +207,8 @@ class SpendEnergy:
         if required == 0:
             return True
         print(str(required) + " Energy required.")
-        if gamefunctions.check_availability('energy', required):
-            gamefunctions.collect_cost('energy', required)
+        if gamefunctions.check_availability(args[0], 'energy', required):
+            gamefunctions.collect_cost(args[0], 'energy', required)
             return True
         else:
             print("You don't have enough Energy.")
@@ -237,7 +241,7 @@ class CollectEmptyOffers:
                 else:
                     print("and " + offer.title(), end=' ')
         if len(args[1]) == 1:
-            print ("[2]")
+            print("[2]")
         else:
             print("[2 each]")
         return True
@@ -289,10 +293,12 @@ class SellItems:
         args[0].current_player.inventory['money'] += total
         return True
 
-# TODO:: Fix a bug where a usage fees will be refunded if there are more than 1 TradeItem actions and any one of them fails.
+
+# TODO:: Fix a bug where a usage fees will be refunded
+# TODO:: if there are more than 1 TradeItem actions and any one of them fails.
 class TradeItems:
     """ Trades items based on the trade rates set: the 'offer package' has a list of tuples (item and rate)
-        'trade package' has a list of tradeable items corresponding to the package """
+        'trade package' has a list of trade-able items corresponding to the package """
 
     offer_package = []
     trade_package = []
@@ -303,6 +309,7 @@ class TradeItems:
 
     '''args: 0 = game_state, 1 = tuple of requested 'trade item' and 'quantity' desired'''
     def do(self, args):
+        request_param = ("", 0)
         for idx, arg in enumerate(args):
             if idx == 0:
                 continue
@@ -332,9 +339,10 @@ class TradeItems:
                         total_inv += ivalue
                         idx += 1
                     if total_inv < current_given:
-                        print ("You don't have enough goods to trade " + trade_item.title() + ".")
+                        print("You don't have enough goods to trade " + trade_item.title() + ".")
                         return False
-                    sel = input("You need to give any " + str(current_given) + " goods for " + trade_item.title() + ". Select item ? ")
+                    sel = input("You need to give any " + str(current_given) + " goods for " + trade_item.title()
+                                + ". Select item ? ")
                     while True:
                         num = input("You got " + str(inv_menu[int(sel) - 1][1]) + ' '
                                     + inv_menu[int(sel) - 1][0].title() + ". How many ? ")
@@ -376,7 +384,7 @@ class TradeItems:
                             return False
                     idx += 1
         money = args[0].current_player.inventory['money']
-        args[0].current_player.inventory = {'money' : money}
+        args[0].current_player.inventory = {'money': money}
         for item, qty in inv_menu:
             args[0].current_player.inventory[item] = qty
         if trade_item in args[0].current_player.inventory:
@@ -389,7 +397,7 @@ class TradeItems:
 
 class CheckResources:
     """ Check if the 'resources' are available with the player in the specified 'quantity'"""
-    resources = {'item' : 0}
+    resources = {'item': 0}
 
     def __init__(self, resource_list):
         self.resources = resource_list
@@ -433,10 +441,10 @@ class ExchangeItem:
 
 class CloseLoans:
     """ Close loans """
-
     ''' args: 0 = game state '''
-    def do(self, args):
-        if not 'loan' in args[0].current_player.inventory or args[0].current_player.inventory['loan'] == 0:
+    @staticmethod
+    def do(args):
+        if 'loan' not in args[0].current_player.inventory or args[0].current_player.inventory['loan'] == 0:
             print("You don't have any Loan.")
             return False
         elif args[0].current_player.inventory['loan'] == 1:
@@ -457,14 +465,14 @@ class CollectStandardItems:
     type = 'none'
     limit = 0
 
-    def __init__(self, limit, type):
+    def __init__(self, limit, item_type):
         self.limit = limit
-        self.type = type
+        self.type = item_type
 
     ''' args: 0 = game state, 1 = player'''
     def do(self, args):
         choices = []
-        for key,value in resources.resource_map.items():
+        for key, value in resources.resource_map.items():
             if value.category == 'standard':
                 choices.append(key)
         for building in args[0].constructed:
@@ -478,7 +486,7 @@ class CollectStandardItems:
                 print(str(idx+1) + '. ' + item.title())
             sel = input("? ")
             selected.append(choices.pop(int(sel)-1))
-        print ("You received ", end="")
+        print("You received ", end="")
         for idx, item in enumerate(selected):
             if item in args[0].current_player.inventory:
                 args[0].current_player.inventory[item] += 1
@@ -498,20 +506,20 @@ class DoShipping:
     """ Ship loaded goods and receive revenue """
 
     '''args: 0 = game state, 1 = tuple of (loaded ships, dictionary of goods and quantity), 2 = player'''
-    def do(self, args):
-        if args[1] == None:
+    @staticmethod
+    def do(args):
+        if args[1] is None:
             return False
 
         shipment = args[1][1]
-        shiplist = args[1][0]
-        for ship in shiplist:
+        ship_list = args[1][0]
+        for ship in ship_list:
             cargo = ship.capacity
             revenue = 0
             shipload = {}
             for item, qty in shipment.items():
                 if qty == 0:
                     continue
-                amt = 0
                 if qty >= cargo:
                     amt = cargo
                 else:
@@ -536,7 +544,3 @@ class DoShipping:
             print(" for " + str(revenue) + " money.")
             args[0].current_player.inventory['money'] += revenue
         return True
-
-
-
-

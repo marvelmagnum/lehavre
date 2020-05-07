@@ -62,12 +62,12 @@
 # - compute food value of supply [adds food items with dependency modifier]
 #
 #
-# **POINTS AI** (determines points path. follows the order while tracking max point gained and selects action if it wins)
+# **POINTS AI**(determines points path. follows the order while tracking max point gained and selects action if it wins)
 # 1> shipping logic:
 # - check unoccupied shipping line exists
 # - check inventory items shipping value
 # - check finished product shipping value for inventory items
-# ---> if unoccupied factory building exists note final shipping value (select primary job - manufacture finished product)
+# ---> if unoccupied factory building exists note final shipping value (primary job - manufacture finished product)
 # --------> calculate energy rqd for shipment.  if energy in inventory (select primary job - shipping line)
 # --------------> if unoccupied energy source available, collect (select primary job - energy source)
 # --------------> if energy source building available, (construct logic)
@@ -90,7 +90,8 @@
 
 
 class Logic:
-    def process_ai(self, game_state, ai_player):
+    @staticmethod
+    def process_ai(game_state, ai_player):
         """ Determines AI entity's move """
         ''' find round feeding req '''
         pl_count = len(game_state.players)

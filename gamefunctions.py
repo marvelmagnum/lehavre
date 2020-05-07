@@ -4,7 +4,7 @@ import resources
 def get_entry_cost(game_state, building):
     """ Get the entry cost of a building """
     if not building.fees:
-        return None # free
+        return None  # free
     print(building.name.title() + " usage fees: ", end="")
     if len(building.fees) == 1:
         for key, value in building.fees[0].items():
@@ -13,7 +13,7 @@ def get_entry_cost(game_state, building):
             if check_availability(game_state, key, value):
                 return collect_cost(game_state, key, value)
             else:
-                print ("You don't have enough " + key + ".")
+                print("You don't have enough " + key + ".")
                 return None
     else:
         print()
@@ -25,7 +25,7 @@ def get_entry_cost(game_state, building):
             if check_availability(game_state, key, value):
                 return collect_cost(game_state, key, value)
             else:
-                print ("You don't have enough " + key + ".")
+                print("You don't have enough " + key + ".")
                 return None
 
 
@@ -33,9 +33,9 @@ def collect_cost(game_state, resource_type, amount):
     """ Collect food/money from player as fees """
     if resource_type == 'food':
         foodstuff = []
-        for key,value in game_state.current_player.inventory.items():
+        for key, value in game_state.current_player.inventory.items():
             if resources.resource_map[key].food > 0 and game_state.current_player.inventory[key] > 0:
-                foodstuff.append((resources.resource_map[key],value))
+                foodstuff.append((resources.resource_map[key], value))
         print("You have:")
         idx = 1
         for food_item, quantity in foodstuff:
@@ -47,7 +47,7 @@ def collect_cost(game_state, resource_type, amount):
             ans = input("Select food to give: ")
             if int(ans) > len(foodstuff):
                 continue
-            entry = foodstuff[int(ans)-1];
+            entry = foodstuff[int(ans)-1]
             num = input("How many: ")
             if int(num) <= entry[1]:
                 amount -= entry[0].food * int(num)
@@ -63,9 +63,9 @@ def collect_cost(game_state, resource_type, amount):
                 print("You don't have " + num + ' ' + entry[0].name.title())
     elif resource_type == 'energy':
         energy_stuff = []
-        for key,value in game_state.current_player.inventory.items():
+        for key, value in game_state.current_player.inventory.items():
             if resources.resource_map[key].energy > 0 and game_state.current_player.inventory[key] > 0:
-                energy_stuff.append((resources.resource_map[key],value))
+                energy_stuff.append((resources.resource_map[key], value))
         print("You have:")
         idx = 1
         for energy_item, quantity in energy_stuff:
@@ -108,7 +108,7 @@ def collect_cost(game_state, resource_type, amount):
 def check_availability(game_state, resource_type, amount):
     """ Check if the required fees are available with the player """
     if resource_type == 'food':
-        for key,value in game_state.current_player.inventory.items():
+        for key, value in game_state.current_player.inventory.items():
             amount -= resources.resource_map[key].food * value
             if amount <= 0:
                 return True
@@ -160,7 +160,7 @@ def develop_town(game_state, development_type):
         priority = 1000
         building = 'none'
         idx = -1
-        for i in range(0,3):
+        for i in range(0, 3):
             if game_state.stacks[i]:
                 if game_state.stacks[i][0].rank < priority:
                     priority = game_state.stacks[i][0].rank
@@ -169,7 +169,7 @@ def develop_town(game_state, development_type):
         building.owner = 'game'
         game_state.constructed.append(building)
         game_state.stacks[idx].pop()
-        print ("City has completed construction of the " + building.name.title())
+        print("City has completed construction of the " + building.name.title())
 
 
 def round_end(game_state):
@@ -177,7 +177,7 @@ def round_end(game_state):
     ship_card = game_state.harvest_stack.pop()
     pl_count = len(game_state.players)
     ''' harvest phase if available '''
-    if ship_card.harvest[pl_count][1] == True:
+    if ship_card.harvest[pl_count][1] is True:
         print("Harvest Phase")
         do_harvest(game_state)
     else:
@@ -224,7 +224,7 @@ def pay_interest(game_state):
                         player.repay_loan()
                         break
                     if int(ans) == 2:
-                        break;
+                        break
 
             if player.inventory['loan'] > 0:
                 if player.inventory['money'] > 0:

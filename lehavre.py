@@ -28,6 +28,7 @@ final_commands = {1: 'money',
                   7: 'cattle',
                   8: 'sell buildings / ships'}
 
+
 def init():
     """ Init game """
     os.system('cls')
@@ -36,13 +37,13 @@ def init():
     print("====================")
     random.shuffle(game_state.bases)  # shuffle bases
 
-    #print("Add Players")
-    player_count = 2 #int(input("Enter total player count (1-5): "))
-    ai_count = 1 #int(input("Enter AI player count: "))
+    # print("Add Players")
+    # player_count = 2  # int(input("Enter total player count (1-5): "))
+    # ai_count = 1 # int(input("Enter AI player count: "))
     # for i in range(0, player_count - ai_count):
     #     pname = input("P" + str(i+1) + " name: ")
     game_state.players.append(Player.create_player("Marvel"))
-    #for i in range(0, ai_count):
+    # for i in range(0, ai_count):
     game_state.players.append((Player.create_player("AI")))
     Building.setup_offers(game_state)
     Ship.setup_rounds(game_state)
@@ -50,14 +51,14 @@ def init():
 
 def update_player(pid):
     """ Updates current player """
-    game_state.current_player = game_state.players[pid];
+    game_state.current_player = game_state.players[pid]
     print("Current Player: " + game_state.current_player.name)
 
 
-def update_offers(turn, round):
+def update_offers(turn, game_round):
     """ Shows turn values, sets bases and updates offers """
     if turn == 1:
-        print("Round " + str(round) + " starts.")
+        print("Round " + str(game_round) + " starts.")
     print("Turn " + str(turn) + ": " + str(game_state.bases[turn - 1]))
     game_state.offers[game_state.bases[turn - 1][0]] += 11
     game_state.offers[game_state.bases[turn - 1][1]] += 1
@@ -87,7 +88,8 @@ def assemble_commands():
     com_count = 10
 
     ''' Provide option to close loan if current player has active loan and can pay it off. '''
-    if 'loan' in game_state.current_player.inventory and game_state.current_player.inventory['loan'] > 0 and game_state.current_player.inventory['money'] >= 5:
+    if 'loan' in game_state.current_player.inventory and game_state.current_player.inventory['loan'] > 0 \
+            and game_state.current_player.inventory['money'] >= 5:
         print(str(10) + ": Repay Loan")
         com_count = 11
 
@@ -119,7 +121,8 @@ def process_command(com, count):
             game_state.current_player.inventory[commands[com]] += game_state.offers[commands[com]]
         else:
             game_state.current_player.inventory[commands[com]] = game_state.offers[commands[com]]
-        print(game_state.current_player.name + " collects " + str(game_state.offers[commands[com]]) + ' ' + commands[com])
+        print(game_state.current_player.name + " collects " + str(game_state.offers[commands[com]])
+              + ' ' + commands[com])
         game_state.offers[commands[com]] = 0
         return True
 
@@ -132,7 +135,8 @@ def process_command(com, count):
         return False
 
     elif com < count:   # usable buildings (or possible repay loan action)
-        if 'loan' in game_state.current_player.inventory and game_state.current_player.inventory['loan'] > 0 and game_state.current_player.inventory['money'] >= 5:
+        if 'loan' in game_state.current_player.inventory and game_state.current_player.inventory['loan'] > 0 \
+                and game_state.current_player.inventory['money'] >= 5:
             cmd_index_start = 11
 
         if com == 10 and cmd_index_start == 11:     # Repay loan is command 10 when valid
@@ -165,7 +169,6 @@ def process_command(com, count):
                             break
                 else:   # use of building failed
                     print(building.name.title() + " could not be used.")
-                    successful = False
                     break
             if use == 0 and fees_paid:  # refund fees if building could not be used
                 for item in fees_paid:
@@ -209,7 +212,7 @@ def run_game():
             com = int(command)
             proceed = process_command(com, command_count)
         elif game_state.current_player.type == 'computer':
-            proceed = logic.process_ai(game_state)
+            proceed = logic.process_ai(game_state, game_state.current_player)
             print(game_state.current_player.name.upper() + " has finished its turn...")
             input()
 
@@ -218,15 +221,15 @@ def run_game():
         else:
             pid += 1
 
-        if proceed == True:
+        if proceed:
             if turns == 7:
                 turns = 1
                 print("Round " + str(rounds) + " ends.")
                 rounds += 1
                 gamefunctions.round_end(game_state)
-                if len(game_state.harvest) == 0:    # Final turn
+                if len(game_state.harvest_stack) == 0:    # Final turn
                     print("Final turn begins...")
-                    break;
+                    break
             else:
                 turns += 1
 
