@@ -19,10 +19,10 @@ class Ship:
         pl_count = len(game_state.players)
         for ship in game_state.ship_designs:
             if pl_count in ship.harvest:
-                game_state.harvest.append(ship)
+                game_state.harvest_stack.append(ship)
 
         ''' Sort the stack by round sort order with smallest on top (for pop()) '''
-        game_state.harvest.sort(key=lambda x: x.harvest[pl_count][0], reverse = True)
+        game_state.harvest_stack.sort(key=lambda x: x.harvest[pl_count][0], reverse = True)
 
 
 ''' Wooden Ships '''

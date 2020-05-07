@@ -144,16 +144,11 @@ def do_harvest(game_state):
 
 def perform_feeding(game_state, food_req):
     """ Perform Feeding Phase """
-    pl_count = len(game_state.players)
     for player in game_state.players:
         if player.type == 'computer':
             continue
-        if player in game_state.ships:
-            ship_food = 0
-            for ship in game_state.ships[player]:
-                ship_food += ship.food[pl_count]
-                print (player.name + "'s " + ship.type + ', ' + ship.name.title() + ", brought in " + str(ship.food[pl_count]) + " food.")
-                food_req -= ship_food
+        ship_food = player.get_ship_food(game_state)
+        food_req -= ship_food
         if food_req > 0:
             player.feed(game_state, food_req)
 
@@ -179,7 +174,7 @@ def develop_town(game_state, development_type):
 
 def round_end(game_state):
     """ End of round bookkeeping """
-    ship_card = game_state.harvest.pop()
+    ship_card = game_state.harvest_stack.pop()
     pl_count = len(game_state.players)
     ''' harvest phase if available '''
     if ship_card.harvest[pl_count][1] == True:

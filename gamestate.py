@@ -44,7 +44,7 @@ class GameState:
 
 
     stacks = [[],[],[]] # 3 stacks of available building cards during the game
-    harvest = [] # harvest round stack according to number of players
+    harvest_stack = [] # harvest round stack according to number of players
     ships = { 'game' : { 'wooden' : [],
                          'iron' : [],
                          'steel' : [],
