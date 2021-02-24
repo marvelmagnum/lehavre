@@ -60,7 +60,7 @@ def update_offers(turn, game_round):
     if turn == 1:
         print("Round " + str(game_round) + " starts.")
     print("Turn " + str(turn) + ": " + str(game_state.bases[turn - 1]))
-    game_state.offers[game_state.bases[turn - 1][0]] += 11
+    game_state.offers[game_state.bases[turn - 1][0]] += 1
     game_state.offers[game_state.bases[turn - 1][1]] += 1
     if len(game_state.bases[turn - 1]) > 2:
         print("Collection of Interest on Loans commences...")
@@ -203,9 +203,9 @@ def run_game():
         update_player(pid)
         update_offers(turns, rounds)
         show_inventory()
-        command_count = assemble_commands()
         proceed = False
         if game_state.current_player.type == 'human':
+            command_count = assemble_commands()
             command = input("? ")
             if command.lower() == "quit":
                 break

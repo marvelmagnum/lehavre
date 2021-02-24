@@ -5,9 +5,6 @@ import resources
 
 class RemoveItems:
     """ Removes 'item' type from inventory applying the 'modifier' """
-    item = "undefined"
-    modifier = 0.0
-
     def __init__(self, item, mod):
         self.item = item
         self.modifier = mod
@@ -24,9 +21,6 @@ class RemoveItems:
 
 class AddItems:
     """ Adds 'item' type to inventory applying the 'modifier' """
-    item = "undefined"
-    modifier = 0.0
-
     def __init__(self, item, mod):
         self.item = item
         self.modifier = mod
@@ -45,12 +39,6 @@ class AddItems:
 class ReceiveItems:
     """ Adds 'item' type to inventory in the specified 'quantity'. Adds 'bonus' amt for 'icons'.
         'limit' determines max bonus. 0 mean no limit."""
-    item = "undefined"
-    quantity = 0
-    icon = "none"
-    bonus = 0
-    limit = 0
-
     def __init__(self, item, qty, icon='none', bonus=0, limit=0):
         self.item = item
         self.quantity = qty
@@ -86,10 +74,8 @@ class ReceiveItems:
 
 class Construct:
     """ Builds a blueprint, moves it to constructed, adds owner, deducts build cost applying the 'discount' """
-    discounts = {'item': 0}
-
     def __init__(self, discounts):
-        self.discounts = discounts
+        self.discounts = discounts  # {'item': 0}
 
     '''args: 0 = game state, 1 = building, 2 = owner'''
     def do(self, args):
@@ -123,8 +109,6 @@ class Construct:
 class BuildShip:
     """ Builds a ship using 'wharf' verifying modernization requirements,
     transfers ownership to player, deducts build cost """
-    wharf = None
-
     def __init__(self, wharf):
         self.wharf = wharf
 
@@ -167,8 +151,6 @@ class BuildShip:
 
 class CollectTickets:
     """ Collect 'amount' money per each player using owned buildings """
-    amount = 0
-
     def __init__(self, amt):
         self.amount = amt
 
@@ -191,9 +173,6 @@ class CollectTickets:
 class SpendEnergy:
     """ Removes chosen energy item from inventory applying the 'modifier'.
     if 'set_qty' is non-zero, that values is used instead """
-    modifier = 0.0
-    set_qty = 0
-
     def __init__(self,  mod, qty=0):
         self.modifier = mod
         self.set_qty = qty
@@ -217,8 +196,6 @@ class SpendEnergy:
 
 class CollectEmptyOffers:
     """ Adds 'quantity' of each item from empty offers to inventory """
-    quantity = 0.0
-
     def __init__(self,  qty):
         self.quantity = qty
 
@@ -249,9 +226,6 @@ class CollectEmptyOffers:
 
 class SellItems:
     """ Sells items from inventory based on the 'standard_rate' and 'upgraded_rate' based on item category """
-    standard_rate = 0
-    upgraded_rate = 0
-
     def __init__(self, std_rate, upg_rate):
         self.standard_rate = std_rate
         self.upgraded_rate = upg_rate
@@ -299,10 +273,6 @@ class SellItems:
 class TradeItems:
     """ Trades items based on the trade rates set: the 'offer package' has a list of tuples (item and rate)
         'trade package' has a list of trade-able items corresponding to the package """
-
-    offer_package = []
-    trade_package = []
-
     def __init__(self, offer_package, trade_package):
         self.offer_package = offer_package
         self.trade_package = trade_package
@@ -397,10 +367,8 @@ class TradeItems:
 
 class CheckResources:
     """ Check if the 'resources' are available with the player in the specified 'quantity'"""
-    resources = {'item': 0}
-
     def __init__(self, resource_list):
-        self.resources = resource_list
+        self.resources = resource_list  # {'item': 0}
 
     '''args: 0 = game_state'''
     def do(self, args):
@@ -417,9 +385,6 @@ class CheckResources:
 
 class ExchangeItem:
     """ Exchange for 'item' based on the 'options' """
-    item = 'item'
-    options = []
-
     def __init__(self, item, options):
         self.item = item
         self.options = options
@@ -462,9 +427,6 @@ class CloseLoans:
 
 class CollectStandardItems:
     """ Select and receive standard items. 'icon' increases the selection limit """
-    type = 'none'
-    limit = 0
-
     def __init__(self, limit, item_type):
         self.limit = limit
         self.type = item_type

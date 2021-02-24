@@ -3,17 +3,11 @@ import math
 
 
 class Player:
-    name = "unnamed"    # player name: p1, p2, p3, ...
-    inventory = {'none': 0}
-    location = 'none'   # player's location: none, building names
-    type = 'undefined'  # player type: "human", "computer"
-
     def __init__(self, name, type):
-        self.name = name
-        self.inventory = {'money': 5, 'coal': 1}
-        self.location = 'none'
-        self.type = type
-
+        self.name = name    # player name: p1, p2, p3, ...
+        self.inventory = {'money': 15, 'coal': 1}
+        self.location = 'none'  # player's location: none, building names
+        self.type = type    # player type: "human", "computer"
 
     @staticmethod
     def create_player(name):
@@ -23,25 +17,24 @@ class Player:
         else:
             return Player(name.title(), 'human')
 
-
     def buy_buildings(self, game_state):
         """ Buy available buildings """
         while True:
             print("Select building to buy:")
             choices = []
-            for i in range(0,3):
+            for i in range(0, 3):
                 if game_state.stacks[i] and game_state.stacks[i][0].price > 0:
                     choices.append(game_state.stacks[i][0])
             for building in game_state.constructed:
                 if building.owner == 'game' and building.price > 0:
                     choices.append(building)
             for idx, building in enumerate(choices):
-                print(str(idx+1) + '. ' + building.name.title() + ' - ' + str(building.price))
-            print(str(idx+2) + ". Nothing")
+                print(str(idx + 1) + '. ' + building.name.title() + ' - ' + str(building.price))
+            print(str(idx + 2) + ". Nothing")
             ans = input("? ")
             if int(ans) == len(choices) + 1:
                 break
-            building = choices[int(ans)-1]
+            building = choices[int(ans) - 1]
             if building.price > self.inventory['money']:
                 print("You cannot afford to purchase the " + building.name.title() + '.')
             else:
@@ -52,12 +45,11 @@ class Player:
                     for i in range(0, 3):
                         if game_state.stacks[i] and game_state.stacks[i][0] == building:
                             game_state.stacks[i].pop()
-                if building.current_user != 'none': # vacate building if anyone is using it
+                if building.current_user != 'none':  # vacate building if anyone is using it
                     user = building.current_user
                     building.current_user = user.location = 'none'
                 print("You purchased the " + building.name.title() + '.')
                 break
-
 
     def sell_buildings(self, game_state):
         """ Sell owned buildings """
@@ -102,12 +94,12 @@ class Player:
             if game_state.ships['game']['steel']:
                 choices.append(game_state.ships['game']['steel'][0])
             for idx, ship in enumerate(choices):
-                print(str(idx+1) + '. ' + ship.type.title() + ' "' + ship.name.title() + '" - ' + str(ship.price))
-            print(str(idx+2) + ". Nothing")
+                print(str(idx + 1) + '. ' + ship.type.title() + ' "' + ship.name.title() + '" - ' + str(ship.price))
+            print(str(idx + 2) + ". Nothing")
             ans = input("? ")
             if int(ans) == len(choices) + 1:
                 break
-            ship = choices[int(ans)-1]
+            ship = choices[int(ans) - 1]
             if ship.price > self.inventory['money']:
                 print('You cannot afford to purchase the "' + ship.name.title() + '".')
             else:
@@ -121,7 +113,6 @@ class Player:
                     game_state.ships['game']['steel'].pop()
                 print("You purchased the " + ship.type.title() + ' "' + ship.name.title() + '".')
                 break
-
 
     def sell_ships(self, game_state):
         """ Sell owned ships """
@@ -164,7 +155,6 @@ class Player:
             elif int(ans) == 2:
                 self.buy_ships(game_state)
 
-
     def perform_sell(self, game_state):
         """ Additional player action - Sell """
         while True:
@@ -180,7 +170,6 @@ class Player:
             elif int(ans) == 2:
                 self.sell_ships(game_state)
 
-
     def take_harvest(self):
         """ Gain harvest resources """
         grain = cattle = False
@@ -191,14 +180,13 @@ class Player:
             self.inventory['cattle'] += 1
             cattle = True
         if grain and cattle:
-            print (self.name + " bred Cattle and harvested Grain.")
+            print(self.name + " bred Cattle and harvested Grain.")
         elif grain:
             print(self.name + " harvested Grain.")
         elif cattle:
             print(self.name + " bred Cattle.")
         else:
             print(self.name + " did not produce Grain or Cattle.")
-
 
     def take_loan(self, food_req):
         """ Takes as many loans reqd """
@@ -211,11 +199,11 @@ class Player:
         self.inventory['money'] += loan_count * 4
         print("You take out " + str(loan_count) + " loans and receive " + str(loan_count * 4) + " money.")
 
-
     def repay_loan(self):
         """ Repay loans """
         max_repay = int(self.inventory['money'] / 5)
-        print("You can repay upto " + str(max_repay) + " of your total " + str(self.inventory['loan']) + " active loans.")
+        print(
+            "You can repay upto " + str(max_repay) + " of your total " + str(self.inventory['loan']) + " active loans.")
         while True:
             ans = input("Each loan will require 5 money to repay. How many do you want to repay ? ")
             if int(ans) <= max_repay:
@@ -224,10 +212,9 @@ class Player:
         self.inventory['money'] -= int(ans) * 5
         self.inventory['loan'] -= int(ans)
         if self.inventory['loan'] == 0:
-            print("You have repaid all active loans for " + str(int(ans) * 5) + " money." )
+            print("You have repaid all active loans for " + str(int(ans) * 5) + " money.")
         else:
             print("You have repaid " + ans + " active loans for " + str(int(ans) * 5) + " money.")
-
 
     def handle_food_deficit(self, game_state, foodstuff, avail_food, food):
         """ Not enough food. sell property or take loan """
@@ -247,24 +234,23 @@ class Player:
         elif int(ans) == 2:  # take loan
             self.take_loan(food - avail_food)
 
-
     def get_avail_food(self):
-        """ Return amount of food in inventory as well as a list of tuples for the food item resource and the available qty """
+        """ Return amount of food in inventory as well as a list of tuples for the food item resource and available qty.
+            Ignores money as it can possibly be used in better ways. """
         foodstuff = []
         avail_food = 0
         for key, value in self.inventory.items():
-            if resources.resource_map[key].food > 0 and self.inventory[key] > 0:
+            if resources.resource_map[key].food > 0 and self.inventory[key] > 0 and key != 'money':
                 foodstuff.append((resources.resource_map[key], value))
                 avail_food += resources.resource_map[key].food * self.inventory[key]
         return avail_food, foodstuff
 
-
     def feed(self, game_state, food):
         """ Handle feeding req at round ends """
-        print (self.name + " needs to arrange for " + str(food) + " food.")
+        print(self.name + " needs to arrange for " + str(food) + " food.")
         while True:
             avail_food, foodstuff = self.get_avail_food()
-            if (avail_food >= food): # has enough food to feed
+            if (avail_food >= food):  # has enough food to feed
                 print("You have:")
                 idx = 1
                 for food_item, quantity in foodstuff:
@@ -290,15 +276,12 @@ class Player:
                 self.handle_food_deficit(game_state, foodstuff, avail_food, food)
                 food -= avail_food
 
-
     def get_ship_food(self, game_state):
         """ Return amount of food generated from owned ships """
         pl_count = len(game_state.players)
         ship_food = 0
         if self in game_state.ships:
             for ship in game_state.ships[self]:
-                ship_food += ship.food[pl_count]
-                print(self.name + "'s " + ship.type + ', ' + ship.name.title() + ", brought in " + str(ship.food[pl_count]) + " food.")
+                ship_food += ship.food[pl_count-1]
+                print(self.name + "'s " + ship.type + ', ' + ship.name.title() + ", brought in " + str(ship.food[pl_count - 1]) + " food.")
         return ship_food
-
-

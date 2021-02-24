@@ -1,16 +1,10 @@
 class Resource:
-    name = "undefined"
-    energy = 0
-    food = 0
-    value = 0
-    category = "undefined"  # standard, upgraded
-
     def __init__(self, name, energy, food, value, category):
         self.name = name
         self.energy = energy
         self.food = food
         self.value = value
-        self.category = category
+        self.category = category    # standard, upgraded
 
 
 loan = Resource('loan', 0, 0, 0, 'undefined')

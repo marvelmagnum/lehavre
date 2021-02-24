@@ -2,9 +2,6 @@ import gamefunctions
 
 class GetQuantity:
     """ Gets quantity of an 'item' type """
-    item = "undefined"
-    limit = 0
-
     def __init__(self, item, limit = 0):
         self.item = item
         self.limit = limit
@@ -18,8 +15,6 @@ class GetQuantity:
 
 class SelectBlueprint:
     """ Gets a building from the available blueprints. setting 'reqc_item' only allows selection of blueprints that require it. """
-    reqd_item = "undefined"
-
     def __init__(self, item = 'undefined'):
         self.reqd_item = item
 
@@ -145,8 +140,6 @@ class GetEmptyOffers:
 
 class SetTradeRequest:
     """ Selects an item among 'choices' and specified amount for trading """
-    choices = []
-
     def __init__(self, choices):
         self.choices = choices
 
@@ -174,9 +167,6 @@ class SetTradeRequest:
 
 class GetExchangeRequest:
     """ Sets up 'options' for a specific 'item' for exchange """
-    item = 'item'
-    options = []
-
     def __init__(self, item, options):
         self.item = item
         self.options = options
